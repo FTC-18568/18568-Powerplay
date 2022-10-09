@@ -60,7 +60,7 @@ public class AprilTagAutoDetection extends LinearOpMode
     @Override
     public void runOpMode()
     {
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "AT5hD7b/////AAABmSp6hwJ/E0a1qUX3PzlGOuYEIBuuA1pHbWJMzwuKNw+73grFOnmmPNs9OXK2PM8yv/SczIhOtIpuAvKfMTMUbLG5BJzUi1U6lSqkKiGBvTW98Et+r14B0lYFXHIwm+c+mDdGfn+9NgvPz0Kf9PsXbKI0MKg4hsDBIH+MKefiyhls+WbzZP5aVd9LTGUQ9uXuegjxwrK7rXUxPUXCi9oLPyqNKBp5tI9m3jJQ/GDVsmDstIhu8ZW1akFfEsLMMUp5B2y4tYDRCM0TkgfJ6wWCy680m4uAS62i2jjLvL313Mna+DCtHZKHpiPaM/x7DBumUVO375XlIjhXpbibyEzrRaTdqHsjmg7JwpKRcSIqopSr", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
 
