@@ -48,6 +48,7 @@ public class PowerPlayTeleOp extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        //Initialization Period
 
         // Define and Initialize Motors
         motorFrontLeft  = hardwareMap.get(DcMotor.class, "motorFrontLeft"); //motorFrontLeft
