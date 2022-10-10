@@ -19,6 +19,12 @@
  * SOFTWARE.
  */
 
+/*
+TODO: Add in lens intrinsics values, measure the physical april tag size and enter it here
+TODO: Mount camera and test detection
+
+ */
+
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -44,7 +50,8 @@ public class AprilTagAutoDetection extends LinearOpMode
     // Lens intrinsics
     // UNITS ARE PIXELS
     // NOTE: this calibration is for the C920 webcam at 800x448.
-    // You will need to do your own calibration for other configurations!
+    // I have been told that the default values are sufficient for detection.
+    // The calibrated values are in res/xml/teamwebcamcalibrations.xml
     double fx = 578.272;
     double fy = 578.272;
     double cx = 402.145;
@@ -53,9 +60,6 @@ public class AprilTagAutoDetection extends LinearOpMode
     // UNITS ARE METERS
     double tagsize = 0.166;
 
-    int ID_TAG_OF_INTEREST = 18; // Tag ID 18 from the 36h11 family
-
-    AprilTagDetection tagOfInterest = null;
 
     @Override
     public void runOpMode()
@@ -92,52 +96,15 @@ public class AprilTagAutoDetection extends LinearOpMode
 
             if(currentDetections.size() != 0)
             {
-                boolean tagFound = false;
-
                 for(AprilTagDetection tag : currentDetections)
                 {
-                    if(tag.id == ID_TAG_OF_INTEREST)
-                    {
-                        tagOfInterest = tag;
-                        tagFound = true;
-                        break;
-                    }
+                    telemetry.addLine("April Tag Detected at ");
+                    tagToTelemetry(tag);
                 }
-
-                if(tagFound)
-                {
-                    telemetry.addLine("Tag of interest is in sight!\n\nLocation data:");
-                    tagToTelemetry(tagOfInterest);
-                }
-                else
-                {
-                    telemetry.addLine("Don't see tag of interest :(");
-
-                    if(tagOfInterest == null)
-                    {
-                        telemetry.addLine("(The tag has never been seen)");
-                    }
-                    else
-                    {
-                        telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
-                        tagToTelemetry(tagOfInterest);
-                    }
-                }
-
             }
             else
             {
-                telemetry.addLine("Don't see tag of interest :(");
-
-                if(tagOfInterest == null)
-                {
-                    telemetry.addLine("(The tag has never been seen)");
-                }
-                else
-                {
-                    telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
-                    tagToTelemetry(tagOfInterest);
-                }
+                telemetry.addLine("No Tags Detected");
 
             }
 
@@ -151,50 +118,14 @@ public class AprilTagAutoDetection extends LinearOpMode
          */
 
         /* Update the telemetry */
-        if(tagOfInterest != null)
-        {
-            telemetry.addLine("Tag snapshot:\n");
-            tagToTelemetry(tagOfInterest);
-            telemetry.update();
-        }
-        else
-        {
-            telemetry.addLine("No tag snapshot available, it was never sighted during the init loop :(");
-            telemetry.update();
-        }
-
-        /* Actually do something useful */
-        if(tagOfInterest == null)
-        {
-            /*
-             * Insert your autonomous code here, presumably running some default configuration
-             * since the tag was never sighted during INIT
-             */
-        }
-        else
-        {
-            /*
-             * Insert your autonomous code here, probably using the tag pose to decide your configuration.
-             */
-
-            // e.g.
-            if(tagOfInterest.pose.x <= 20)
-            {
-                // do something
-            }
-            else if(tagOfInterest.pose.x >= 20 && tagOfInterest.pose.x <= 50)
-            {
-                // do something else
-            }
-            else if(tagOfInterest.pose.x >= 50)
-            {
-                // do something else
-            }
-        }
 
 
-        /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */
-        while (opModeIsActive()) {sleep(20);}
+        /* Driver Pressed Start. Use the detected april tag to determine what to do */
+
+
+
+        /* Wait until program ends */
+        sleep(30000);
     }
 
     void tagToTelemetry(AprilTagDetection detection)

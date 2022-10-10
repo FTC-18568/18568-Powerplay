@@ -33,11 +33,11 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name="PowerPlay TeleOp", group="PowerPlay")
-@Disabled
 public class PowerPlayTeleOp extends LinearOpMode {
 
     /* Declare OpMode members. */
@@ -56,7 +56,10 @@ public class PowerPlayTeleOp extends LinearOpMode {
         motorBackLeft   = hardwareMap.get(DcMotor.class, "motorBackLeft");
         motorBackRight  = hardwareMap.get(DcMotor.class, "motorBackRight");
 
+        motorFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        motorBackRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        waitForStart();
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
