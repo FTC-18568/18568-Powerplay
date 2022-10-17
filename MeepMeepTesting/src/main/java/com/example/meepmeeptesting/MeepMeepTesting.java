@@ -8,13 +8,16 @@ import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 public class MeepMeepTesting {
     public static int startingX;
     public static int startingY;
-    public static int startingPos = 1; //blue left = 1, blue right = 2, red left = 3, red right = 4;
+    public static int startingPos; //blue left = 1, blue right = 2, red left = 3, red right = 4;
+
 
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
 
         startingX = 0;
         startingY = 0;
+        startingPos = 2;
+
 
         switch(startingPos) {
             case 1:
@@ -38,19 +41,20 @@ public class MeepMeepTesting {
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(startingX, startingY, Math.toRadians(-90) )) //starting position (x,y)
 
+
                                 //.waitSeconds(1) - stay still
                                 //each tile is 23.33 width
                                 //hyptonouse length = 33
 
 
                                 //blue location 1 (left team)
-//                                .forward(39)
-//                                .turn(Math.toRadians(65))
-//                                .forward(30)
-//                                .turn(Math.toRadians(205))
-//                                .turn(Math.toRadians(-90))
-//                                .forward(24)
-//                                .waitSeconds(2)
+                                .forward(39)
+                                .turn(Math.toRadians(65))
+                                .forward(30)
+                                .turn(Math.toRadians(205))
+                                .turn(Math.toRadians(-90))
+                                .forward(24)
+                                .waitSeconds(2)
 //
 //
 //                                //blue location 2 (left team)
@@ -91,13 +95,13 @@ public class MeepMeepTesting {
 //                                .waitSeconds(2)
 //
 //                                //blue location 1 (right team)
-                                .forward(39)
-                                .turn(Math.toRadians(-65))
-                                .forward(30)
-                                .turn(Math.toRadians(-205))
-                                .turn(Math.toRadians(25))
-                                .forward(55)
-                                .waitSeconds(2)
+//                                .forward(39)
+//                                .turn(Math.toRadians(-65))
+//                                .forward(30)
+//                                .turn(Math.toRadians(-205))
+//                                .turn(Math.toRadians(25))
+//                                .forward(55)
+//                                .waitSeconds(2)
 
 
 
