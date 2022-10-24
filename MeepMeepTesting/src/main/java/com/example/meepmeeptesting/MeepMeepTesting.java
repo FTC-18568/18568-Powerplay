@@ -1,6 +1,7 @@
 package com.example.meepmeeptesting;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
@@ -12,11 +13,11 @@ public class MeepMeepTesting {
 
 
     public static void main(String[] args) {
-        MeepMeep meepMeep = new MeepMeep(800);
+        MeepMeep meepMeep = new MeepMeep(700);
 
         startingX = 0;
         startingY = 0;
-        startingPos = 2;
+        startingPos = 1;
 
 
         switch(startingPos) {
@@ -38,6 +39,7 @@ public class MeepMeepTesting {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .setDimensions(16, 16)
+
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(startingX, startingY, Math.toRadians(-90) )) //starting position (x,y)
 
@@ -48,13 +50,11 @@ public class MeepMeepTesting {
 
 
                                 //blue location 1 (left team)
-                                .forward(39)
-                                .turn(Math.toRadians(65))
-                                .forward(30)
-                                .turn(Math.toRadians(205))
-                                .turn(Math.toRadians(-90))
-                                .forward(24)
-                                .waitSeconds(2)
+                                .splineTo(new Vector2d(36, 25), Math.toRadians(270))
+                                .splineToSplineHeading(new Pose2d(55, 11, Math.toRadians(200)), Math.toRadians(0))
+                                .waitSeconds(1.5)
+                                .splineTo(new Vector2d(58, 36), Math.toRadians(90))
+//
 //
 //
 //                                //blue location 2 (left team)
