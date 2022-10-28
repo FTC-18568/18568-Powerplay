@@ -17,16 +17,16 @@ public class MeepMeepTesting {
 
         startingX = 0;
         startingY = 0;
-        startingPos = 1;
+        startingPos = 2;
 
 
         switch(startingPos) {
             case 1:
-                startingX = 35;
+                startingX = 36;
                 startingY = 62;
                 break;
             case 2:
-                startingX = -35;
+                startingX = -36;
                 startingY = 62;
                 break;
 
@@ -44,64 +44,47 @@ public class MeepMeepTesting {
                         drive.trajectorySequenceBuilder(new Pose2d(startingX, startingY, Math.toRadians(-90) )) //starting position (x,y)
 
 
-                                //.waitSeconds(1) - stay still
-                                //each tile is 23.33 width
-                                //hyptonouse length = 33
-
-
                                 //blue location 1 (left team)
-                                .splineTo(new Vector2d(36, 25), Math.toRadians(270))
-                                .splineToSplineHeading(new Pose2d(55, 11, Math.toRadians(200)), Math.toRadians(0))
-                                .waitSeconds(1.5)
-                                .splineTo(new Vector2d(58, 36), Math.toRadians(90))
-//
-//
+//                                .splineTo(new Vector2d(36, 25), Math.toRadians(270))
+//                                .splineToSplineHeading(new Pose2d(55, 11, Math.toRadians(200)), Math.toRadians(0)) //first radian is way it faces
+//                                .waitSeconds(1.5)
+//                                .splineTo(new Vector2d(58, 36), Math.toRadians(90))
+
 //
 //                                //blue location 2 (left team)
-//                                .forward(39)
-//                                .turn(Math.toRadians(65))
-//                                .forward(30)
-//                                .turn(Math.toRadians(205))
-//                                .turn(Math.toRadians(-43))
-//                                .forward(36)
-//                                .waitSeconds(2)
-//
+//                                .splineTo(new Vector2d(36, 25), Math.toRadians(270))
+//                                .splineToSplineHeading(new Pose2d(55, 11, Math.toRadians(200)), Math.toRadians(0))
+//                                .waitSeconds(1.5)
+//                                .splineTo(new Vector2d(35, 36), Math.toRadians(90))
+
+
+
 //                                //blue location 3 (left team)
-//                                .forward(39)
-//                                .turn(Math.toRadians(65))
-//                                .forward(30)
-//                                .turn(Math.toRadians(205))
-//                                .turn(Math.toRadians(-25))
-//                                .forward(55)
-//                                .waitSeconds(2)
+//                               .splineTo(new Vector2d(36, 25), Math.toRadians(270))
+//                                .splineToSplineHeading(new Pose2d(55, 11, Math.toRadians(200)), Math.toRadians(0))
+//                                .waitSeconds(1.5)
+//                                .splineTo(new Vector2d(11, 36), Math.toRadians(90))
 
                                     //blue location 3 (right team)
-//                                .forward(39)
-//                                .turn(Math.toRadians(-65))
-//                                .forward(30)
-//                                .turn(Math.toRadians(-205))
-//                                .turn(Math.toRadians(90))
-//                                .forward(24)
-//                                .waitSeconds(2)
+//                                .splineTo(new Vector2d(-36, 25), Math.toRadians(270))
+//                                .splineToSplineHeading(new Pose2d(-55, 11, Math.toRadians(340)), Math.toRadians(0)) //first radian is way it faces
+//                                .waitSeconds(1.5)
+//                                .splineTo(new Vector2d(-58, 36), Math.toRadians(90))
+
+
 //
 //
 //                                //blue location 2 (right team)
-//                                .forward(39)
-//                                .turn(Math.toRadians(-65))
-//                                .forward(30)
-//                                .turn(Math.toRadians(-205))
-//                                .turn(Math.toRadians(43))
-//                                .forward(36)
-//                                .waitSeconds(2)
+//                                 .splineTo(new Vector2d(-36, 25), Math.toRadians(270))
+//                                .splineToSplineHeading(new Pose2d(-55, 11, Math.toRadians(340)), Math.toRadians(0)) //first radian is way it faces
+//                                .waitSeconds(1.5)
+//                                .splineTo(new Vector2d(-35, 36), Math.toRadians(90))
 //
 //                                //blue location 1 (right team)
-//                                .forward(39)
-//                                .turn(Math.toRadians(-65))
-//                                .forward(30)
-//                                .turn(Math.toRadians(-205))
-//                                .turn(Math.toRadians(25))
-//                                .forward(55)
-//                                .waitSeconds(2)
+                               .splineTo(new Vector2d(-36, 25), Math.toRadians(270))
+                                .splineToSplineHeading(new Pose2d(-55, 11, Math.toRadians(340)), Math.toRadians(0)) //first radian is way it faces
+                                .waitSeconds(1.5)
+                                .splineTo(new Vector2d(-11, 36), Math.toRadians(90))
 
 
 
