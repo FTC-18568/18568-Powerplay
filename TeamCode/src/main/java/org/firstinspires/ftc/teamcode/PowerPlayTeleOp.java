@@ -45,6 +45,8 @@ public class PowerPlayTeleOp extends LinearOpMode {
     public DcMotor  motorFrontRight  = null;
     public DcMotor  motorBackLeft    = null;
     public DcMotor  motorBackRight    = null;
+    public Servo servoL = null;
+    public Servo servoR = null;
 
     @Override
     public void runOpMode() {
@@ -56,8 +58,14 @@ public class PowerPlayTeleOp extends LinearOpMode {
         motorBackLeft   = hardwareMap.get(DcMotor.class, "motorBackLeft");
         motorBackRight  = hardwareMap.get(DcMotor.class, "motorBackRight");
 
+        servoL = hardwareMap.get(Servo.class, "servoL");
+        servoR = hardwareMap.get(Servo.class, "servoR");
+
         motorFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         motorBackRight.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        servoL.setPosition(0);
+        servoR.setPosition(0);
 
         waitForStart();
         // run until the end of the match (driver presses STOP)
@@ -71,6 +79,20 @@ public class PowerPlayTeleOp extends LinearOpMode {
             motorBackRight.setPower(vertical - pivot + horizontal);
             motorFrontLeft.setPower(vertical + pivot + horizontal);
             motorBackLeft.setPower(vertical + pivot - horizontal);
+
+            if (gamepad1.x) {
+                servoL.setPosition(0.4);
+            }
+            if (gamepad1.a) {
+                servoL.setPosition(0);
+            }
+
+            if (gamepad1.b) {
+                servoR.setPosition(0.4);
+            }
+            if (gamepad1.y) {
+                servoR.setPosition(0);
+            }
 
         }
     }
