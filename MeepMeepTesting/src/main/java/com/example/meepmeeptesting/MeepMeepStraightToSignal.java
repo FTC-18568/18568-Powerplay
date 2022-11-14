@@ -6,7 +6,7 @@ import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
-public class MeepMeepTesting {
+public class MeepMeepStraightToSignal {
     public static int startingX;
     public static int startingY;
     public static int startingPos; //blue left = 1, blue right = 2, red left = 3, red right = 4;
@@ -66,25 +66,18 @@ public class MeepMeepTesting {
 //                                .splineTo(new Vector2d(11, 36), Math.toRadians(90))
 
                                     //blue location 3 (right team)
-                                .splineTo(new Vector2d(-36, 25), Math.toRadians(270))
-                                .splineToSplineHeading(new Pose2d(-55, 11, Math.toRadians(340)), Math.toRadians(0)) //first radian is way it faces
-                                .waitSeconds(1.5)
-                                .splineTo(new Vector2d(-58, 36), Math.toRadians(90))
+
+                              //  .splineTo(new Vector2d(-58, 36), Math.toRadians(270))
 
 
 //
 //
 //                                //blue location 2 (right team)
-//                                 .splineTo(new Vector2d(-36, 25), Math.toRadians(270))
-//                                .splineToSplineHeading(new Pose2d(-55, 11, Math.toRadians(340)), Math.toRadians(0)) //first radian is way it faces
-//                                .waitSeconds(1.5)
-//                                .splineTo(new Vector2d(-35, 36), Math.toRadians(90))
+                                .splineTo(new Vector2d(-35, 36), Math.toRadians(270))
 //
 //                                //blue location 1 (right team)
-//                                .splineTo(new Vector2d(-36, 25), Math.toRadians(270))
-//                                .splineToSplineHeading(new Pose2d(-55, 11, Math.toRadians(340)), Math.toRadians(0)) //first radian is way it faces
-//                                .waitSeconds(1.5)
-//                                .splineTo(new Vector2d(-11, 36), Math.toRadians(90))
+                               // .splineTo(new Vector2d(-11, 36), Math.toRadians(270))
+//
 
 
 
