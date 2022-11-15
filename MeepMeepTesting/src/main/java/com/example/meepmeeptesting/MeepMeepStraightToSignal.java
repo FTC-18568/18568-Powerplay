@@ -39,12 +39,11 @@ public class MeepMeepStraightToSignal {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .setDimensions(16, 16)
-
                 .followTrajectorySequence(drive ->
-                                drive.trajectorySequenceBuilder(new Pose2d(startingX, startingY, Math.toRadians(-90) )) //starting position (x,y)
+                        drive.trajectorySequenceBuilder(new Pose2d(startingX, startingY, Math.toRadians(-90) )) //starting position (x,y)
 
 
-                                        //blue location 1 (left team)
+                                //blue location 1 (left team)
 //                                .splineTo(new Vector2d(36, 25), Math.toRadians(270))
 //                                .splineToSplineHeading(new Pose2d(55, 11, Math.toRadians(200)), Math.toRadians(0)) //first radian is way it faces
 //                                .waitSeconds(1.5)
@@ -65,18 +64,19 @@ public class MeepMeepStraightToSignal {
 //                                .waitSeconds(1.5)
 //                                .splineTo(new Vector2d(11, 36), Math.toRadians(90))
 
-                                        //blue location 3 (right team)
+                                    //blue location 3 (right team)
 
-                                        //  .splineTo(new Vector2d(-58, 36), Math.toRadians(270))
+                              //  .splineTo(new Vector2d(-58, 36), Math.toRadians(270))
 
 
 //
 //
 //                                //blue location 2 (right team)
-                                        .splineTo(new Vector2d(-35, 36), Math.toRadians(270))
+
+                                .splineTo(new Vector2d(-35, 36), Math.toRadians(270))
 //
 //                                //blue location 1 (right team)
-                                        // .splineTo(new Vector2d(-11, 36), Math.toRadians(270))
+                               // .splineTo(new Vector2d(-11, 36), Math.toRadians(270))
 //
 
 

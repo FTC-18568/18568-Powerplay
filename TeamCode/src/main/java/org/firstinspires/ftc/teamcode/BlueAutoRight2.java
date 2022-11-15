@@ -121,7 +121,6 @@ public class BlueAutoRight2 extends LinearOpMode
                 myTrajectory = drive.trajectoryBuilder(new Pose2d(-36, 62, Math.toRadians(-90)))
                         .splineTo(new Vector2d(-36, 25), Math.toRadians(270))
                         .splineToSplineHeading(new Pose2d(-55, 11, Math.toRadians(340)), Math.toRadians(0)) //first radian is way it faces
-                        // .waitSeconds(1.5)
                         .splineTo(new Vector2d(-58, 36), Math.toRadians(90))
                         .build();
                 break;
