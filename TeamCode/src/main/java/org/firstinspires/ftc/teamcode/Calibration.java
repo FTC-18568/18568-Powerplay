@@ -37,8 +37,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="PowerPlay TeleOp", group="PowerPlay")
-public class PowerPlayTeleOp extends LinearOpMode {
+@TeleOp(name="PowerPlay Calibration", group="PowerPlay")
+public class Calibration extends LinearOpMode {
 
     /* Declare OpMode members. */
     public DcMotor  motorFrontLeft   = null; //frontLeft backLeft
@@ -49,6 +49,7 @@ public class PowerPlayTeleOp extends LinearOpMode {
     public Servo servoR = null;
     public DcMotor slideL = null;
     public DcMotor slideR = null;
+
 
     @Override
     public void runOpMode() {
@@ -63,72 +64,28 @@ public class PowerPlayTeleOp extends LinearOpMode {
         servoL = hardwareMap.get(Servo.class, "servoL");
         servoR = hardwareMap.get(Servo.class, "servoR");
 
-        motorFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        motorBackRight.setDirection(DcMotorSimple.Direction.REVERSE);
-
         slideL = hardwareMap.get(DcMotor.class, "slideL");
         slideR = hardwareMap.get(DcMotor.class, "slideR");
 
-        servoL.setPosition(0);
-        servoR.setPosition(0);
+        motorFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        motorBackRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        slideL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        slideR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
 
         waitForStart();
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            double vertical = 0.7 * gamepad1.left_stick_y;
-            double horizontal = -0.7 * gamepad1.left_stick_x;
-            double pivot = -0.7 * gamepad1.right_stick_x;
-
-            motorFrontRight.setPower(vertical - pivot - horizontal);
-            motorBackRight.setPower(vertical - pivot + horizontal);
-            motorFrontLeft.setPower(vertical + pivot + horizontal);
-            motorBackLeft.setPower(vertical + pivot - horizontal);
-
-            if (gamepad1.x) {
-                servoL.setPosition(0);
-                servoR.setPosition(0.2);
-            }
-            if (gamepad1.a) {
-                servoL.setPosition(0.1);
-                servoR.setPosition(0);
-            }
-
             if (gamepad1.dpad_up) {
-                slideL.setTargetPosition(2700);
-                slideR.setTargetPosition(-2700);
-                slideL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                slideR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                slideL.setPower(0.8);
-                slideR.setPower(-0.8);
-                while (slideL.isBusy()) {
-                    telemetry.addData("Slide L position", slideL.getCurrentPosition());
-                }
-                slideL.setPower(0);
-                slideR.setPower(0);
+                slideL.setPower(0.5);
+                slideR.setPower(-0.5);
             } else if (gamepad1.dpad_down) {
-                slideL.setTargetPosition(0);
-                slideR.setTargetPosition(0);
-                slideL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                slideR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 slideL.setPower(-0.2);
                 slideR.setPower(0.2);
-                while (slideL.isBusy()) {
-                    telemetry.addData("Slide L position", slideL.getCurrentPosition());
-                }
-                slideL.setPower(0);
-                slideR.setPower(0);
             } else {
                 slideL.setPower(0);
                 slideR.setPower(0);
             }
-
-            telemetry.addData("Slide L: ", slideL.getCurrentPosition());
-            telemetry.addData("Slide R: ", slideR.getCurrentPosition());
-            telemetry.update();
 
         }
     }

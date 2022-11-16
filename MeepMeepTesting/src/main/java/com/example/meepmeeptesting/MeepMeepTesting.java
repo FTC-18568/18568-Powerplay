@@ -41,37 +41,10 @@ public class MeepMeepTesting {
                 .setDimensions(16, 16)
 
                 .followTrajectorySequence(drive ->
-<<<<<<< HEAD
-                        drive.trajectorySequenceBuilder(new Pose2d(startingX, startingY, Math.toRadians(-90))) //starting position (x,y)
+                                drive.trajectorySequenceBuilder(new Pose2d(startingX, startingY, Math.toRadians(-90) )) //starting position (x,y)
 
 
-                                //blue location 1 (left team)
-                                //                                .splineTo(new Vector2d(36, 25), Math.toRadians(270))
-                                //                                .splineToSplineHeading(new Pose2d(55, 11, Math.toRadians(200)), Math.toRadians(0)) //first radian is way it faces
-                                //                                .waitSeconds(1.5)
-                                //                                .splineTo(new Vector2d(58, 36), Math.toRadians(90))
-
-                                //
-                                //                                //blue location 2 (left team)
-                                //                                .splineTo(new Vector2d(36, 25), Math.toRadians(270))
-                                //                                .splineToSplineHeading(new Pose2d(55, 11, Math.toRadians(200)), Math.toRadians(0))
-                                //                                .waitSeconds(1.5)
-                                //                                .splineTo(new Vector2d(35, 36), Math.toRadians(90))
-
-
-
-                                //                                //blue location 3 (left team)
-                                //                               .splineTo(new Vector2d(36, 25), Math.toRadians(270))
-                                //                                .splineToSplineHeading(new Pose2d(55, 11, Math.toRadians(200)), Math.toRadians(0))
-                                //                                .waitSeconds(1.5)
-                                //                                .splineTo(new Vector2d(11, 36), Math.toRadians(90))
-
-                                //blue location 3 (right team)
-=======
-                        drive.trajectorySequenceBuilder(new Pose2d(startingX, startingY, Math.toRadians(-90) )) //starting position (x,y)
-
-
-                                //blue location 1 (left team)
+                                        //blue location 1 (left team)
 //                                .splineTo(new Vector2d(36, 25), Math.toRadians(270))
 //                                .splineToSplineHeading(new Pose2d(55, 11, Math.toRadians(200)), Math.toRadians(0)) //first radian is way it faces
 //                                .waitSeconds(1.5)
@@ -92,29 +65,13 @@ public class MeepMeepTesting {
 //                                .waitSeconds(1.5)
 //                                .splineTo(new Vector2d(11, 36), Math.toRadians(90))
 
-                                    //blue location 3 (right team)
->>>>>>> d4f8727197804d2ac516b5a5265f20f656efdaf2
-                                .splineTo(new Vector2d(-36, 25), Math.toRadians(270))
-                                .splineToSplineHeading(new Pose2d(-55, 11, Math.toRadians(340)), Math.toRadians(0)) //first radian is way it faces
-                                .waitSeconds(1.5)
-                                .splineTo(new Vector2d(-58, 36), Math.toRadians(90))
+                                        //blue location 3 (right team)
+                                        .splineTo(new Vector2d(-36, 25), Math.toRadians(270))
+                                        .splineToSplineHeading(new Pose2d(-55, 11, Math.toRadians(340)), Math.toRadians(0)) //first radian is way it faces
+                                        .waitSeconds(1.5)
+                                        .splineTo(new Vector2d(-58, 36), Math.toRadians(90))
 
 
-<<<<<<< HEAD
-                                //
-                                //
-                                //                                //blue location 2 (right team)
-                                //                                 .splineTo(new Vector2d(-36, 25), Math.toRadians(270))
-                                //                                .splineToSplineHeading(new Pose2d(-55, 11, Math.toRadians(340)), Math.toRadians(0)) //first radian is way it faces
-                                //                                .waitSeconds(1.5)
-                                //                                .splineTo(new Vector2d(-35, 36), Math.toRadians(90))
-                                //
-                                //                                //blue location 1 (right team)
-                                //                                .splineTo(new Vector2d(-36, 25), Math.toRadians(270))
-                                //                                .splineToSplineHeading(new Pose2d(-55, 11, Math.toRadians(340)), Math.toRadians(0)) //first radian is way it faces
-                                //                                .waitSeconds(1.5)
-                                //                                .splineTo(new Vector2d(-11, 36), Math.toRadians(90))
-=======
 //
 //
 //                                //blue location 2 (right team)
@@ -134,8 +91,7 @@ public class MeepMeepTesting {
 
 
 
->>>>>>> d4f8727197804d2ac516b5a5265f20f656efdaf2
-                                .build()
+                                        .build()
                 );
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_POWERPLAY_OFFICIAL)
