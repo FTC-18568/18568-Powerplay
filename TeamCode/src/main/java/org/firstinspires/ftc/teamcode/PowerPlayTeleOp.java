@@ -45,6 +45,10 @@ public class PowerPlayTeleOp extends LinearOpMode {
     public DcMotor  motorFrontRight  = null;
     public DcMotor  motorBackLeft    = null;
     public DcMotor  motorBackRight    = null;
+
+    public DcMotor slideL = null;
+    public DcMotor slideR = null;
+
     public Servo servoL = null;
     public Servo servoR = null;
 
@@ -58,6 +62,9 @@ public class PowerPlayTeleOp extends LinearOpMode {
         motorBackLeft   = hardwareMap.get(DcMotor.class, "motorBackLeft");
         motorBackRight  = hardwareMap.get(DcMotor.class, "motorBackRight");
 
+        slideL = hardwareMap.get(DcMotor.class, "slideL");
+        slideR = hardwareMap.get(DcMotor.class, "slideR");
+
         servoL = hardwareMap.get(Servo.class, "servoL");
         servoR = hardwareMap.get(Servo.class, "servoR");
 
@@ -65,9 +72,10 @@ public class PowerPlayTeleOp extends LinearOpMode {
         motorBackRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
         servoL.setPosition(0);
-        servoR.setPosition(0);
+        servoR.setPosition(0.1);
 
         waitForStart();
+
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
@@ -81,17 +89,24 @@ public class PowerPlayTeleOp extends LinearOpMode {
             motorBackLeft.setPower(vertical + pivot - horizontal);
 
             if (gamepad1.x) {
-                servoL.setPosition(0.4);
+                servoL.setPosition(0.2
+                );
+                servoR.setPosition(0);
             }
             if (gamepad1.a) {
                 servoL.setPosition(0);
+                servoR.setPosition(0.1);
             }
 
-            if (gamepad1.b) {
-                servoR.setPosition(0.4);
-            }
-            if (gamepad1.y) {
-                servoR.setPosition(0);
+            if (gamepad1.dpad_down) {
+                slideL.setPower(-0.2);
+                slideR.setPower(0.2);
+            } else if (gamepad1.dpad_up) {
+                slideL.setPower(0.5);
+                slideR.setPower(-0.5);
+            } else {
+                slideL.setPower(0);
+                slideR.setPower(0);
             }
 
         }
