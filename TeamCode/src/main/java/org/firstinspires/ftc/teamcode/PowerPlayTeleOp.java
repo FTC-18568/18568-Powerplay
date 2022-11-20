@@ -29,7 +29,6 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -74,7 +73,7 @@ public class PowerPlayTeleOp extends LinearOpMode {
         slideL = hardwareMap.get(DcMotor.class, "slideL");
         slideR = hardwareMap.get(DcMotor.class, "slideR");
 
-        servoL.setPosition(0.01);
+        servoL.setPosition(0.02);
         servoR.setPosition(0.2);
 
         slideL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -84,6 +83,8 @@ public class PowerPlayTeleOp extends LinearOpMode {
 
         slideL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slideR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
 
         waitForStart();
 
@@ -104,7 +105,7 @@ public class PowerPlayTeleOp extends LinearOpMode {
 
             //Open
             if (gamepad1.x) {
-                servoL.setPosition(0.01);
+                servoL.setPosition(0.02);
                 servoR.setPosition(0.2);
             }
             //Close
@@ -113,10 +114,10 @@ public class PowerPlayTeleOp extends LinearOpMode {
                 servoR.setPosition(0.05);
             }
 
-            //Automatically raise/lower slide
+            //Automatically raise/lower slide for high goal
             if (gamepad1.dpad_up) {
-                slideL.setTargetPosition(2700);
-                slideR.setTargetPosition(-2700);
+                slideL.setTargetPosition(2800);
+                slideR.setTargetPosition(-2800);
                 slideL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 slideR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 slideL.setPower(0.8);
@@ -125,9 +126,13 @@ public class PowerPlayTeleOp extends LinearOpMode {
                     telemetry.addData("Slide L position", slideL.getCurrentPosition());
                     telemetry.update();
                 }
-                slideL.setPower(0);
-                slideR.setPower(0);
+//                slideL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//                slideR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//                slideL.setPower(0.45);
+//                slideR.setPower(-0.45);
             } else if (gamepad1.dpad_down) {
+                servoL.setPosition(0.17);
+                servoR.setPosition(0.05);
                 slideL.setTargetPosition(0);
                 slideR.setTargetPosition(0);
                 slideL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -140,10 +145,83 @@ public class PowerPlayTeleOp extends LinearOpMode {
                 }
                 slideL.setPower(0);
                 slideR.setPower(0);
+                servoL.setPosition(0.02);
+                servoR.setPosition(0.2);
             } else {
                 slideL.setPower(0);
                 slideR.setPower(0);
             }
+
+            //Automatically raise/lower slide for medium
+            if (gamepad1.dpad_right) {
+                slideL.setTargetPosition(2000);
+                slideR.setTargetPosition(-2000);
+                slideL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slideR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slideL.setPower(0.8);
+                slideR.setPower(-0.8);
+                while (slideL.isBusy()) {
+                    telemetry.addData("Slide L position", slideL.getCurrentPosition());
+                    telemetry.update();
+                }
+            } else if (gamepad1.dpad_left) {
+                servoL.setPosition(0.17);
+                servoR.setPosition(0.05);
+                sleep(500);
+                slideL.setTargetPosition(0);
+                slideR.setTargetPosition(0);
+                slideL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slideR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slideL.setPower(-0.2);
+                slideR.setPower(0.2);
+                while (slideL.isBusy()) {
+                    telemetry.addData("Slide L position", slideL.getCurrentPosition());
+                    telemetry.update();
+                }
+                slideL.setPower(0);
+                slideR.setPower(0);
+                servoL.setPosition(0.02);
+                servoR.setPosition(0.2);
+            } else {
+                slideL.setPower(0);
+                slideR.setPower(0);
+            }
+
+            //Automatically raise/lower slide for low
+            if (gamepad1.y) {
+                slideL.setTargetPosition(200);
+                slideR.setTargetPosition(-200);
+                slideL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slideR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slideL.setPower(0.8);
+                slideR.setPower(-0.8);
+                while (slideL.isBusy()) {
+                    telemetry.addData("Slide L position", slideL.getCurrentPosition());
+                    telemetry.update();
+                }
+            } else if (gamepad1.b) {
+                servoL.setPosition(0.17);
+                servoR.setPosition(0.05);
+                sleep(500);
+                slideL.setTargetPosition(0);
+                slideR.setTargetPosition(0);
+                slideL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slideR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slideL.setPower(-0.2);
+                slideR.setPower(0.2);
+                while (slideL.isBusy()) {
+                    telemetry.addData("Slide L position", slideL.getCurrentPosition());
+                    telemetry.update();
+                }
+                slideL.setPower(0);
+                slideR.setPower(0);
+                servoL.setPosition(0.02);
+                servoR.setPosition(0.2);
+            } else {
+                slideL.setPower(0);
+                slideR.setPower(0);
+            }
+
 
 
             telemetry.addData("Slide L: ", slideL.getCurrentPosition());
