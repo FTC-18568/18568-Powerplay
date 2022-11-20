@@ -87,6 +87,28 @@ public class Calibration extends LinearOpMode {
                 slideR.setPower(0);
             }
 
+            //open
+            if (gamepad1.a) {
+                servoL.setPosition(0.01);
+            }
+
+            //close
+            if (gamepad1.x) {
+                servoL.setPosition(0.17);
+            }
+
+            //open
+            if (gamepad1.y) {
+                servoR.setPosition(0.2);
+            }
+
+            //close
+            if (gamepad1.b) {
+                servoR.setPosition(0.05);
+            }
+
+
+
         }
     }
 }

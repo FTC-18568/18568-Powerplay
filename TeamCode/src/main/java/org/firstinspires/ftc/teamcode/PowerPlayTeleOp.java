@@ -45,10 +45,12 @@ public class PowerPlayTeleOp extends LinearOpMode {
     public DcMotor  motorFrontRight  = null;
     public DcMotor  motorBackLeft    = null;
     public DcMotor  motorBackRight    = null;
-    public Servo servoL = null;
-    public Servo servoR = null;
+
     public DcMotor slideL = null;
     public DcMotor slideR = null;
+
+    public Servo servoL = null;
+    public Servo servoR = null;
 
     @Override
     public void runOpMode() {
@@ -60,6 +62,9 @@ public class PowerPlayTeleOp extends LinearOpMode {
         motorBackLeft   = hardwareMap.get(DcMotor.class, "motorBackLeft");
         motorBackRight  = hardwareMap.get(DcMotor.class, "motorBackRight");
 
+        slideL = hardwareMap.get(DcMotor.class, "slideL");
+        slideR = hardwareMap.get(DcMotor.class, "slideR");
+
         servoL = hardwareMap.get(Servo.class, "servoL");
         servoR = hardwareMap.get(Servo.class, "servoR");
 
@@ -69,16 +74,23 @@ public class PowerPlayTeleOp extends LinearOpMode {
         slideL = hardwareMap.get(DcMotor.class, "slideL");
         slideR = hardwareMap.get(DcMotor.class, "slideR");
 
-        servoL.setPosition(0);
-        servoR.setPosition(0);
+        servoL.setPosition(0.01);
+        servoR.setPosition(0.2);
 
         slideL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slideR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        telemetry.addData("Zero power behavior", slideL.getZeroPowerBehavior());
+
+        slideL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slideR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         waitForStart();
+
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
+            //Drive
             double vertical = 0.7 * gamepad1.left_stick_y;
             double horizontal = -0.7 * gamepad1.left_stick_x;
             double pivot = -0.7 * gamepad1.right_stick_x;
@@ -88,15 +100,20 @@ public class PowerPlayTeleOp extends LinearOpMode {
             motorFrontLeft.setPower(vertical + pivot + horizontal);
             motorBackLeft.setPower(vertical + pivot - horizontal);
 
+            //Actuate Claw
+
+            //Open
             if (gamepad1.x) {
-                servoL.setPosition(0);
+                servoL.setPosition(0.01);
                 servoR.setPosition(0.2);
             }
+            //Close
             if (gamepad1.a) {
-                servoL.setPosition(0.1);
-                servoR.setPosition(0);
+                servoL.setPosition(0.17);
+                servoR.setPosition(0.05);
             }
 
+            //Automatically raise/lower slide
             if (gamepad1.dpad_up) {
                 slideL.setTargetPosition(2700);
                 slideR.setTargetPosition(-2700);
@@ -106,6 +123,7 @@ public class PowerPlayTeleOp extends LinearOpMode {
                 slideR.setPower(-0.8);
                 while (slideL.isBusy()) {
                     telemetry.addData("Slide L position", slideL.getCurrentPosition());
+                    telemetry.update();
                 }
                 slideL.setPower(0);
                 slideR.setPower(0);
@@ -118,6 +136,7 @@ public class PowerPlayTeleOp extends LinearOpMode {
                 slideR.setPower(0.2);
                 while (slideL.isBusy()) {
                     telemetry.addData("Slide L position", slideL.getCurrentPosition());
+                    telemetry.update();
                 }
                 slideL.setPower(0);
                 slideR.setPower(0);
@@ -125,6 +144,7 @@ public class PowerPlayTeleOp extends LinearOpMode {
                 slideL.setPower(0);
                 slideR.setPower(0);
             }
+
 
             telemetry.addData("Slide L: ", slideL.getCurrentPosition());
             telemetry.addData("Slide R: ", slideR.getCurrentPosition());

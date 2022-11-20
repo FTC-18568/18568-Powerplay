@@ -17,7 +17,7 @@ public class MeepMeepTesting {
 
         startingX = 0;
         startingY = 0;
-        startingPos = 2;
+        startingPos = 1;
 
 
         switch(startingPos) {

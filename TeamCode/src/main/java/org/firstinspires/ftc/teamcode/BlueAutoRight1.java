@@ -100,27 +100,31 @@ public class BlueAutoRight1 extends LinearOpMode
          * during the init loop.
          */
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        Pose2d startPose = new Pose2d(-36, 62, Math.toRadians(270));
+        drive.setPoseEstimate(startPose);
 
         switch(tagid) {
             case 1:
-                myTrajectory = drive.trajectoryBuilder(new Pose2d(-36, 62, Math.toRadians(-90)))
-                        .splineTo(new Vector2d(-11, 36), Math.toRadians(270))
+                myTrajectory = drive.trajectoryBuilder(startPose)
+                        .splineTo(new Vector2d(-20, 59), Math.toRadians(0))
+                        .splineTo(new Vector2d(-13, 36), Math.toRadians(270))
                         .build();
 
                 break;
             case 2:
-                myTrajectory = drive.trajectoryBuilder(new Pose2d(-36, 62, Math.toRadians(-90)))
-                        .splineTo(new Vector2d(-35, 36), Math.toRadians(270))
+                myTrajectory = drive.trajectoryBuilder(startPose)
+                        .splineTo(new Vector2d(-36, 36), Math.toRadians(270))
                         .build();
                 break;
             case 3:
-                myTrajectory = drive.trajectoryBuilder(new Pose2d(-36, 62, Math.toRadians(-90)))
-                        .splineTo(new Vector2d(-58, 36), Math.toRadians(270))
+                myTrajectory = drive.trajectoryBuilder(startPose)
+                        .splineTo(new Vector2d(-52, 59), Math.toRadians(180))
+                        .splineTo(new Vector2d(-61, 36), Math.toRadians(270))
                         .build();
                 break;
         }
 
-
+        drive.followTrajectory(myTrajectory);
 
 
 
