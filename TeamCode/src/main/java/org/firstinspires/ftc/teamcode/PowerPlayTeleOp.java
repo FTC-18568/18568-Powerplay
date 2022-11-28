@@ -116,8 +116,8 @@ public class PowerPlayTeleOp extends LinearOpMode {
 
             //Automatically raise/lower slide for high goal
             if (gamepad1.dpad_up) {
-                slideL.setTargetPosition(2800);
-                slideR.setTargetPosition(-2800);
+                slideL.setTargetPosition(2700);
+                slideR.setTargetPosition(-2700);
                 slideL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 slideR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 slideL.setPower(0.8);
@@ -137,8 +137,8 @@ public class PowerPlayTeleOp extends LinearOpMode {
                 slideR.setTargetPosition(0);
                 slideL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 slideR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                slideL.setPower(-0.2);
-                slideR.setPower(0.2);
+                slideL.setPower(-0.6);
+                slideR.setPower(0.6);
                 while (slideL.isBusy()) {
                     telemetry.addData("Slide L position", slideL.getCurrentPosition());
                     telemetry.update();
