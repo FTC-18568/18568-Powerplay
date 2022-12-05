@@ -51,6 +51,15 @@ public class PowerPlayTeleOp extends LinearOpMode {
     public Servo servoL = null;
     public Servo servoR = null;
 
+    public int slideTarget;
+    public int error;
+
+    double p = 0.8;
+    double p_coefficient = 0.008;
+    double f_ground = 0.00025;
+    double f_mid = 0.002;
+    double f_high = 0.002;
+
     @Override
     public void runOpMode() {
         //Initialization Period
@@ -79,10 +88,15 @@ public class PowerPlayTeleOp extends LinearOpMode {
         slideL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slideR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        slideL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        slideR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         telemetry.addData("Zero power behavior", slideL.getZeroPowerBehavior());
 
         slideL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slideR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        slideTarget = 0;
 
 
 
@@ -101,131 +115,108 @@ public class PowerPlayTeleOp extends LinearOpMode {
             motorFrontLeft.setPower(vertical + pivot + horizontal);
             motorBackLeft.setPower(vertical + pivot - horizontal);
 
-            //Actuate Claw
-
-            //Open
+            //Open Claw
             if (gamepad1.x) {
                 servoL.setPosition(0.02);
                 servoR.setPosition(0.2);
             }
-            //Close
+            //Close Claw
             if (gamepad1.a) {
                 servoL.setPosition(0.17);
                 servoR.setPosition(0.05);
             }
 
-            //Automatically raise/lower slide for high goal
+            //Set slide to go to target position
+            error = slideTarget-slideL.getCurrentPosition();
+            if (slideTarget==0) {
+                if (error<-100) {
+                    slideL.setPower(-0.6);
+                    slideR.setPower(0.6);
+                } else if (error<-10){
+                    slideL.setPower(-0.1);
+                    slideR.setPower(0.1);
+                } else if (error<-5) {
+                    slideL.setPower(0);
+                    slideR.setPower(0);
+                }
+            }
+            else if (slideTarget==200) {
+                if(error > 30) {
+                    p = p_coefficient * error;
+                    slideL.setPower(p);
+                    slideR.setPower(-(p));
+                } else {
+                    slideL.setPower(f_ground);
+                    slideR.setPower(-f_ground);
+                }
+            }
+            else if (slideTarget==2000) {
+                if(error > 30) {
+                    p = p_coefficient * error;
+                    slideL.setPower(p);
+                    slideR.setPower(-(p));
+                } else {
+                    slideL.setPower(f_mid);
+                    slideR.setPower(-f_mid);
+                }
+            }
+            else if (slideTarget==2700) {
+                if(error > 100) {
+                    slideL.setPower(0.8);
+                    slideR.setPower(-0.8);
+                } else if (error>30) {
+                    slideL.setPower(0.3);
+                    slideR.setPower(-0.3);
+                } else {
+                    slideL.setPower(f_high);
+                    slideR.setPower(-f_high);
+                }
+            }
+
+
+
+            //Raise for high goal
             if (gamepad1.dpad_up) {
-                slideL.setTargetPosition(2800);
-                slideR.setTargetPosition(-2800);
-                slideL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                slideR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                slideL.setPower(0.8);
-                slideR.setPower(-0.8);
-                while (slideL.isBusy()) {
-                    telemetry.addData("Slide L position", slideL.getCurrentPosition());
-                    telemetry.update();
-                }
-//                slideL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//                slideR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//                slideL.setPower(0.45);
-//                slideR.setPower(-0.45);
-            } else if (gamepad1.dpad_down) {
+                slideTarget = 2700;
+            }
+            if (gamepad1.dpad_down) {
                 servoL.setPosition(0.17);
                 servoR.setPosition(0.05);
-                slideL.setTargetPosition(0);
-                slideR.setTargetPosition(0);
-                slideL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                slideR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                slideL.setPower(-0.2);
-                slideR.setPower(0.2);
-                while (slideL.isBusy()) {
-                    telemetry.addData("Slide L position", slideL.getCurrentPosition());
-                    telemetry.update();
-                }
-                slideL.setPower(0);
-                slideR.setPower(0);
-                servoL.setPosition(0.02);
-                servoR.setPosition(0.2);
-            } else {
-                slideL.setPower(0);
-                slideR.setPower(0);
+                slideTarget = 0;
             }
-
-            //Automatically raise/lower slide for medium
+            //Raise for medium goal
             if (gamepad1.dpad_right) {
-                slideL.setTargetPosition(2000);
-                slideR.setTargetPosition(-2000);
-                slideL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                slideR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                slideL.setPower(0.8);
-                slideR.setPower(-0.8);
-                while (slideL.isBusy()) {
-                    telemetry.addData("Slide L position", slideL.getCurrentPosition());
-                    telemetry.update();
-                }
-            } else if (gamepad1.dpad_left) {
+                slideTarget = 2000;
+            }
+            if (gamepad1.dpad_left) {
                 servoL.setPosition(0.17);
                 servoR.setPosition(0.05);
-                sleep(500);
-                slideL.setTargetPosition(0);
-                slideR.setTargetPosition(0);
-                slideL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                slideR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                slideL.setPower(-0.2);
-                slideR.setPower(0.2);
-                while (slideL.isBusy()) {
-                    telemetry.addData("Slide L position", slideL.getCurrentPosition());
-                    telemetry.update();
-                }
-                slideL.setPower(0);
-                slideR.setPower(0);
-                servoL.setPosition(0.02);
-                servoR.setPosition(0.2);
-            } else {
-                slideL.setPower(0);
-                slideR.setPower(0);
+                slideTarget = 0;
             }
-
-            //Automatically raise/lower slide for low
+            //Raise for ground junction
             if (gamepad1.y) {
-                slideL.setTargetPosition(200);
-                slideR.setTargetPosition(-200);
-                slideL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                slideR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                slideL.setPower(0.8);
-                slideR.setPower(-0.8);
-                while (slideL.isBusy()) {
-                    telemetry.addData("Slide L position", slideL.getCurrentPosition());
-                    telemetry.update();
-                }
-            } else if (gamepad1.b) {
+                slideTarget = 200;
+            }
+            if (gamepad1.b) {
                 servoL.setPosition(0.17);
                 servoR.setPosition(0.05);
                 sleep(500);
-                slideL.setTargetPosition(0);
-                slideR.setTargetPosition(0);
-                slideL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                slideR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                slideL.setPower(-0.2);
-                slideR.setPower(0.2);
-                while (slideL.isBusy()) {
-                    telemetry.addData("Slide L position", slideL.getCurrentPosition());
-                    telemetry.update();
-                }
-                slideL.setPower(0);
-                slideR.setPower(0);
-                servoL.setPosition(0.02);
-                servoR.setPosition(0.2);
-            } else {
+                slideTarget = 0;
+            }
+
+            //Overextension failsafe
+            if (slideL.getCurrentPosition()>2760) {
                 slideL.setPower(0);
                 slideR.setPower(0);
             }
 
 
 
+            //Print slide encoder data
             telemetry.addData("Slide L: ", slideL.getCurrentPosition());
             telemetry.addData("Slide R: ", slideR.getCurrentPosition());
+            telemetry.addData("SlideTarget: ", slideTarget);
+            telemetry.addData("P: ", p*0.008);
             telemetry.update();
 
         }
