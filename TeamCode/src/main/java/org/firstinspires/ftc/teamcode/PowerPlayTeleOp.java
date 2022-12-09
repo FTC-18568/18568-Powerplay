@@ -126,53 +126,6 @@ public class PowerPlayTeleOp extends LinearOpMode {
                 servoR.setPosition(0.05);
             }
 
-//            //Set slide to go to target position
-//            error = slideTarget-slideL.getCurrentPosition();
-//            if (slideTarget==0) {
-//                if (error<-100) {
-//                    slideL.setPower(-0.6);
-//                    slideR.setPower(0.6);
-//                } else if (error<-10){
-//                    slideL.setPower(-0.1);
-//                    slideR.setPower(0.1);
-//                } else if (error<-5) {
-//                    slideL.setPower(0);
-//                    slideR.setPower(0);
-//                }
-//            }
-//            else if (slideTarget==200) {
-//                if(error > 30) {
-//                    p = p_coefficient * error;
-//                    slideL.setPower(p);
-//                    slideR.setPower(-(p));
-//                } else {
-//                    slideL.setPower(f_ground);
-//                    slideR.setPower(-f_ground);
-//                }
-//            }
-//            else if (slideTarget==2000) {
-//                if(error > 30) {
-//                    p = p_coefficient * error;
-//                    slideL.setPower(p);
-//                    slideR.setPower(-(p));
-//                } else {
-//                    slideL.setPower(f_mid);
-//                    slideR.setPower(-f_mid);
-//                }
-//            }
-//            else if (slideTarget==2700) {
-//                if(error > 100) {
-//                    slideL.setPower(0.8);
-//                    slideR.setPower(-0.8);
-//                } else if (error>30) {
-//                    slideL.setPower(0.3);
-//                    slideR.setPower(-0.3);
-//                } else {
-//                    slideL.setPower(f_high);
-//                    slideR.setPower(-f_high);
-//                }
-//            }
-
 
 
             //Raise for high goal
