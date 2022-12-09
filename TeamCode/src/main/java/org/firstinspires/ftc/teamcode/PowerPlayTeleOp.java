@@ -126,86 +126,83 @@ public class PowerPlayTeleOp extends LinearOpMode {
                 servoR.setPosition(0.05);
             }
 
-            //Set slide to go to target position
-            error = slideTarget-slideL.getCurrentPosition();
-            if (slideTarget==0) {
-                if (error<-100) {
-                    slideL.setPower(-0.6);
-                    slideR.setPower(0.6);
-                } else if (error<-10){
-                    slideL.setPower(-0.1);
-                    slideR.setPower(0.1);
-                } else if (error<-5) {
-                    slideL.setPower(0);
-                    slideR.setPower(0);
-                }
-            }
-            else if (slideTarget==200) {
-                if(error > 30) {
-                    p = p_coefficient * error;
-                    slideL.setPower(p);
-                    slideR.setPower(-(p));
-                } else {
-                    slideL.setPower(f_ground);
-                    slideR.setPower(-f_ground);
-                }
-            }
-            else if (slideTarget==2000) {
-                if(error > 30) {
-                    p = p_coefficient * error;
-                    slideL.setPower(p);
-                    slideR.setPower(-(p));
-                } else {
-                    slideL.setPower(f_mid);
-                    slideR.setPower(-f_mid);
-                }
-            }
-            else if (slideTarget==2700) {
-                if(error > 100) {
-                    slideL.setPower(0.8);
-                    slideR.setPower(-0.8);
-                } else if (error>30) {
-                    slideL.setPower(0.3);
-                    slideR.setPower(-0.3);
-                } else {
-                    slideL.setPower(f_high);
-                    slideR.setPower(-f_high);
-                }
-            }
+//            //Set slide to go to target position
+//            error = slideTarget-slideL.getCurrentPosition();
+//            if (slideTarget==0) {
+//                if (error<-100) {
+//                    slideL.setPower(-0.6);
+//                    slideR.setPower(0.6);
+//                } else if (error<-10){
+//                    slideL.setPower(-0.1);
+//                    slideR.setPower(0.1);
+//                } else if (error<-5) {
+//                    slideL.setPower(0);
+//                    slideR.setPower(0);
+//                }
+//            }
+//            else if (slideTarget==200) {
+//                if(error > 30) {
+//                    p = p_coefficient * error;
+//                    slideL.setPower(p);
+//                    slideR.setPower(-(p));
+//                } else {
+//                    slideL.setPower(f_ground);
+//                    slideR.setPower(-f_ground);
+//                }
+//            }
+//            else if (slideTarget==2000) {
+//                if(error > 30) {
+//                    p = p_coefficient * error;
+//                    slideL.setPower(p);
+//                    slideR.setPower(-(p));
+//                } else {
+//                    slideL.setPower(f_mid);
+//                    slideR.setPower(-f_mid);
+//                }
+//            }
+//            else if (slideTarget==2700) {
+//                if(error > 100) {
+//                    slideL.setPower(0.8);
+//                    slideR.setPower(-0.8);
+//                } else if (error>30) {
+//                    slideL.setPower(0.3);
+//                    slideR.setPower(-0.3);
+//                } else {
+//                    slideL.setPower(f_high);
+//                    slideR.setPower(-f_high);
+//                }
+//            }
 
 
 
             //Raise for high goal
             if (gamepad1.dpad_up) {
-                slideTarget = 2700;
+                slideL.setPower(0.8);
+                slideR.setPower(-0.8);
+                slideUp(2700);
             }
             if (gamepad1.dpad_down) {
+                slideL.setPower(-0.6);
+                slideR.setPower(0.6);
                 servoL.setPosition(0.17);
                 servoR.setPosition(0.05);
-                slideTarget = 0;
+                slideDown(0);
             }
             //Raise for medium goal
             if (gamepad1.dpad_right) {
-                slideTarget = 2000;
-            }
-            if (gamepad1.dpad_left) {
-                servoL.setPosition(0.17);
-                servoR.setPosition(0.05);
-                slideTarget = 0;
+                slideL.setPower(0.8);
+                slideR.setPower(-0.8);
+                slideUp(2000);
             }
             //Raise for ground junction
             if (gamepad1.y) {
-                slideTarget = 200;
-            }
-            if (gamepad1.b) {
-                servoL.setPosition(0.17);
-                servoR.setPosition(0.05);
-                sleep(500);
-                slideTarget = 0;
+                slideL.setPower(0.8);
+                slideR.setPower(-0.8);
+                slideUp(200);
             }
 
             //Overextension failsafe
-            if (slideL.getCurrentPosition()>2760) {
+            if (slideL.getCurrentPosition()>2700) {
                 slideL.setPower(0);
                 slideR.setPower(0);
             }
@@ -219,6 +216,40 @@ public class PowerPlayTeleOp extends LinearOpMode {
             telemetry.addData("P: ", p*0.008);
             telemetry.update();
 
+        }
+    }
+
+    public void slideUp(int slideTarget) {
+        motorFrontRight.setPower(0);
+        motorBackRight.setPower(0);
+        motorFrontLeft.setPower(0);
+        motorBackLeft.setPower(0);
+        slideL.setTargetPosition(slideTarget);
+        slideR.setTargetPosition(slideTarget);
+        slideL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideL.setPower(0.8);
+        slideR.setPower(-0.8);
+        while (slideL.isBusy()) {
+            telemetry.addData("Slide L position", slideL.getCurrentPosition());
+            telemetry.update();
+        }
+    }
+
+    public void slideDown(int slideTarget) {
+        motorFrontRight.setPower(0);
+        motorBackRight.setPower(0);
+        motorFrontLeft.setPower(0);
+        motorBackLeft.setPower(0);
+        slideL.setTargetPosition(slideTarget);
+        slideR.setTargetPosition(slideTarget);
+        slideL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideL.setPower(-0.6);
+        slideR.setPower(0.6);
+        while (slideL.isBusy()) {
+            telemetry.addData("Slide L position", slideL.getCurrentPosition());
+            telemetry.update();
         }
     }
 }
