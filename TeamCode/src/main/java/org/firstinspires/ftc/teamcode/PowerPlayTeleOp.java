@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
@@ -51,14 +52,11 @@ public class PowerPlayTeleOp extends LinearOpMode {
     public Servo servoL = null;
     public Servo servoR = null;
 
-    public int slideTarget;
-    public int error;
+    private double p;
+    private double i;
+    private double d;
+    private double f;
 
-    double p = 0.8;
-    double p_coefficient = 0.008;
-    double f_ground = 0.00025;
-    double f_mid = 0.002;
-    double f_high = 0.002;
 
     @Override
     public void runOpMode() {
@@ -79,9 +77,6 @@ public class PowerPlayTeleOp extends LinearOpMode {
         motorFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         motorBackRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        slideL = hardwareMap.get(DcMotor.class, "slideL");
-        slideR = hardwareMap.get(DcMotor.class, "slideR");
-
         servoL.setPosition(0.02);
         servoR.setPosition(0.2);
 
@@ -96,7 +91,16 @@ public class PowerPlayTeleOp extends LinearOpMode {
         slideL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slideR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        slideTarget = 0;
+        p = 1.622128713;
+        i = 0.1*p;
+        d = 0;
+        f = p*10;
+
+//        slideL.setVelocityPIDFCoefficients(p, i, d, f);
+//        slideR.setVelocityPIDFCoefficients(p, i, d, f);
+//
+//        slideL.setPositionPIDFCoefficients(5.0);
+//        slideR.setPositionPIDFCoefficients(5.0);
 
 
 
@@ -155,7 +159,7 @@ public class PowerPlayTeleOp extends LinearOpMode {
             }
 
             //Overextension failsafe
-            if (slideL.getCurrentPosition()>2700) {
+            if (slideL.getCurrentPosition()>2750) {
                 slideL.setPower(0);
                 slideR.setPower(0);
             }
@@ -165,8 +169,6 @@ public class PowerPlayTeleOp extends LinearOpMode {
             //Print slide encoder data
             telemetry.addData("Slide L: ", slideL.getCurrentPosition());
             telemetry.addData("Slide R: ", slideR.getCurrentPosition());
-            telemetry.addData("SlideTarget: ", slideTarget);
-            telemetry.addData("P: ", p*0.008);
             telemetry.update();
 
         }
@@ -178,31 +180,42 @@ public class PowerPlayTeleOp extends LinearOpMode {
         motorFrontLeft.setPower(0);
         motorBackLeft.setPower(0);
         slideL.setTargetPosition(slideTarget);
-        slideR.setTargetPosition(slideTarget);
+        slideR.setTargetPosition(-slideTarget);
         slideL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        slideL.setVelocity(800);
+//        slideR.setVelocity(-800);
         slideL.setPower(0.8);
-        slideR.setPower(-0.8);
+        slideL.setPower(-0.8);
         while (slideL.isBusy()) {
             telemetry.addData("Slide L position", slideL.getCurrentPosition());
+            //telemetry.addData("Slide L velcoty", slideL.getVelocity());
             telemetry.update();
         }
     }
 
     public void slideDown(int slideTarget) {
+        servoL.setPosition(0.17);
+        servoR.setPosition(0.05);
+        sleep(400);
         motorFrontRight.setPower(0);
         motorBackRight.setPower(0);
         motorFrontLeft.setPower(0);
         motorBackLeft.setPower(0);
         slideL.setTargetPosition(slideTarget);
-        slideR.setTargetPosition(slideTarget);
+        slideR.setTargetPosition(-slideTarget);
         slideL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        slideL.setVelocity(-600);
+//        slideR.setVelocity(600);
         slideL.setPower(-0.6);
-        slideR.setPower(0.6);
+        slideL.setPower(0.6);
         while (slideL.isBusy()) {
             telemetry.addData("Slide L position", slideL.getCurrentPosition());
+            //telemetry.addData("Slide L velcoty", slideL.getVelocity());
             telemetry.update();
         }
+        servoL.setPosition(0.02);
+        servoR.setPosition(0.2);
     }
 }
