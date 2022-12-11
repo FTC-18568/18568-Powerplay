@@ -57,6 +57,8 @@ public class PowerPlayTeleOp extends LinearOpMode {
     private double d;
     private double f;
 
+    private boolean clawOpen;
+
 
     @Override
     public void runOpMode() {
@@ -80,6 +82,8 @@ public class PowerPlayTeleOp extends LinearOpMode {
         servoL.setPosition(0.02);
         servoR.setPosition(0.2);
 
+        clawOpen = true;
+
         slideL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slideR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
@@ -90,6 +94,8 @@ public class PowerPlayTeleOp extends LinearOpMode {
 
         slideL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slideR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
 
         p = 1.622128713;
         i = 0.1*p;
@@ -123,20 +129,22 @@ public class PowerPlayTeleOp extends LinearOpMode {
             if (gamepad1.x) {
                 servoL.setPosition(0.02);
                 servoR.setPosition(0.2);
+                clawOpen = true;
             }
             //Close Claw
             if (gamepad1.a) {
                 servoL.setPosition(0.17);
                 servoR.setPosition(0.05);
+                clawOpen = false;
             }
 
 
 
             //Raise for high goal
-            if (gamepad1.dpad_up) {
+            if (gamepad1.dpad_up && !clawOpen) {
                 slideL.setPower(0.8);
                 slideR.setPower(-0.8);
-                slideUp(2700);
+                slideUp(2650);
             }
             if (gamepad1.dpad_down) {
                 slideL.setPower(-0.6);
@@ -146,13 +154,13 @@ public class PowerPlayTeleOp extends LinearOpMode {
                 slideDown(0);
             }
             //Raise for medium goal
-            if (gamepad1.dpad_right) {
+            if (gamepad1.dpad_right && !clawOpen) {
                 slideL.setPower(0.8);
                 slideR.setPower(-0.8);
                 slideUp(2000);
             }
             //Raise for ground junction
-            if (gamepad1.y) {
+            if (gamepad1.y && !clawOpen) {
                 slideL.setPower(0.8);
                 slideR.setPower(-0.8);
                 slideUp(200);
@@ -217,5 +225,6 @@ public class PowerPlayTeleOp extends LinearOpMode {
         }
         servoL.setPosition(0.02);
         servoR.setPosition(0.2);
+        clawOpen = true;
     }
 }
