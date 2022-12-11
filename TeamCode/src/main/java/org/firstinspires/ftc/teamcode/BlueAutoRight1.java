@@ -119,7 +119,7 @@ public class BlueAutoRight1 extends LinearOpMode
             case 3:
                 myTrajectory = drive.trajectoryBuilder(startPose)
                         .splineTo(new Vector2d(-52, 59), Math.toRadians(180))
-                        .splineTo(new Vector2d(-61, 36), Math.toRadians(270))
+                        .splineTo(new Vector2d(-60, 36), Math.toRadians(270))
                         .build();
                 break;
         }

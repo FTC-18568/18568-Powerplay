@@ -104,7 +104,7 @@ public class RedAutoLeft1 extends LinearOpMode
             case 1:
                 myTrajectory = drive.trajectoryBuilder(startPose)
                         .splineTo(new Vector2d(-52, -59), Math.toRadians(180))
-                        .splineTo(new Vector2d(-61, -36), Math.toRadians(90))
+                        .splineTo(new Vector2d(-60, -36), Math.toRadians(90))
                         .build();
 
                 break;

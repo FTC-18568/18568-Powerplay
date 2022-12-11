@@ -20,17 +20,19 @@ public class MeepMeepStraightToSignal {
         startingX = 0;
         startingY = 0;
         startingAngle = 0;
-        startingPos = 1;
+        startingPos = 4;
 
 
 
         switch(startingPos) {
             case 1: //blue left
+                //Log.d("myTag", "This is my message 1");
                 startingX = 36;
                 startingY = 62;
                 startingAngle = 270;
                 break;
             case 2: //blue right
+                //Log.d("myTag", "This is my message");
                 startingX = -36;
                 startingY = 62;
                 startingAngle = 270;
@@ -47,22 +49,22 @@ public class MeepMeepStraightToSignal {
                 break;
 
 
-
         }
 
         //https://firstinspiresst01.blob.core.windows.net/first-energize-ftc/game-manual-part-2-traditional.pdf
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
+
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
-                .setDimensions(16, 18)
+                .setDimensions(18, 18)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(startingX, startingY, Math.toRadians(startingAngle) )) //starting position (x,y)
 
 
                                 //blue location 1 (left team)
-                                .splineTo(new Vector2d(52, 59), Math.toRadians(0))
-                                .splineTo(new Vector2d(61, 36), Math.toRadians(270))
+//                                .splineTo(new Vector2d(52, 59), Math.toRadians(0))
+//                                .splineTo(new Vector2d(60, 36), Math.toRadians(270))
 
 
 //                                //blue location 2 (left team)
@@ -81,7 +83,9 @@ public class MeepMeepStraightToSignal {
                                     //blue location 3 (right team)
 
 //                                .splineTo(new Vector2d(-52, 59), Math.toRadians(180))
-//                                .splineTo(new Vector2d(-61, 36), Math.toRadians(270))
+//                                .waitSeconds(1)
+//                                .splineTo(new Vector2d(-60, 36), Math.toRadians(270))
+
 
 //                                //blue location 2 (right team)
 
@@ -96,7 +100,7 @@ public class MeepMeepStraightToSignal {
 
                                 //red location 1 (left team)
 //                                .splineTo(new Vector2d(-52, -59), Math.toRadians(180))
-//                                .splineTo(new Vector2d(-61, -36), Math.toRadians(90))
+//                                .splineTo(new Vector2d(-60, -36), Math.toRadians(90))
 
 
 //                                //red location 2 (left team)
@@ -124,8 +128,8 @@ public class MeepMeepStraightToSignal {
 
 //                                //red location 3 (right team)
 
-//                                .splineTo(new Vector2d(52, -59), Math.toRadians(0))
-//                                .splineTo(new Vector2d(61, -36), Math.toRadians(90))
+                                .splineTo(new Vector2d(52, -59), Math.toRadians(0))
+                                .splineTo(new Vector2d(60, -36), Math.toRadians(90))
 
 
                                         .build()
