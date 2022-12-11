@@ -140,29 +140,20 @@ public class PowerPlayTeleOp extends LinearOpMode {
 
 
 
+
             //Raise for high goal
             if (gamepad1.dpad_up && !clawOpen) {
-                slideL.setPower(0.8);
-                slideR.setPower(-0.8);
                 slideUp(2650);
             }
             if (gamepad1.dpad_down) {
-                slideL.setPower(-0.6);
-                slideR.setPower(0.6);
-                servoL.setPosition(0.17);
-                servoR.setPosition(0.05);
                 slideDown(0);
             }
             //Raise for medium goal
             if (gamepad1.dpad_right && !clawOpen) {
-                slideL.setPower(0.8);
-                slideR.setPower(-0.8);
                 slideUp(2000);
             }
             //Raise for ground junction
             if (gamepad1.y && !clawOpen) {
-                slideL.setPower(0.8);
-                slideR.setPower(-0.8);
                 slideUp(200);
             }
 
