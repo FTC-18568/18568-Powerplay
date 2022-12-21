@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
@@ -47,8 +48,10 @@ public class Calibration extends LinearOpMode {
     public DcMotor  motorBackRight    = null;
     public Servo servoL = null;
     public Servo servoR = null;
-    public DcMotor slideL = null;
-    public DcMotor slideR = null;
+    public DcMotorEx slideL = null;
+    public DcMotorEx slideR = null;
+    double currentVelocity;
+    double maxVelocity;
 
 
     @Override
@@ -64,11 +67,13 @@ public class Calibration extends LinearOpMode {
         servoL = hardwareMap.get(Servo.class, "servoL");
         servoR = hardwareMap.get(Servo.class, "servoR");
 
-        slideL = hardwareMap.get(DcMotor.class, "slideL");
-        slideR = hardwareMap.get(DcMotor.class, "slideR");
+        slideL = hardwareMap.get(DcMotorEx.class, "slideL");
+        slideR = hardwareMap.get(DcMotorEx.class, "slideR");
 
         motorFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         motorBackRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        currentVelocity = 0;
+        maxVelocity = 0;
 
 
 
@@ -76,9 +81,16 @@ public class Calibration extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
+            currentVelocity = slideL.getVelocity();
+
+            if (currentVelocity > maxVelocity) {
+                maxVelocity = currentVelocity;
+            }
+
+
             if (gamepad1.dpad_up) {
-                slideL.setPower(0.5);
-                slideR.setPower(-0.5);
+                slideL.setPower(0.8);
+                slideR.setPower(-0.8);
             } else if (gamepad1.dpad_down) {
                 slideL.setPower(-0.2);
                 slideR.setPower(0.2);
@@ -106,6 +118,10 @@ public class Calibration extends LinearOpMode {
             if (gamepad1.b) {
                 servoR.setPosition(0.05);
             }
+
+            telemetry.addData("Max velocity", maxVelocity);
+            telemetry.addData("current velocity", currentVelocity);
+            telemetry.update();
 
 
 
