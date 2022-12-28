@@ -68,15 +68,15 @@ public class DriveTrainDebugging extends LinearOpMode {
 
             //Drive
             if (gamepad1.dpad_up) {
-                motorFrontRight.setPower(1);
-                motorBackRight.setPower(1);
-                motorFrontLeft.setPower(1);
-                motorBackLeft.setPower(1);
-            } else if (gamepad1.dpad_down) {
                 motorFrontRight.setPower(-1);
                 motorBackRight.setPower(-1);
                 motorFrontLeft.setPower(-1);
                 motorBackLeft.setPower(-1);
+            } else if (gamepad1.dpad_down) {
+                motorFrontRight.setPower(1);
+                motorBackRight.setPower(1);
+                motorFrontLeft.setPower(1);
+                motorBackLeft.setPower(1);
             } else if (gamepad1.dpad_right) {
                 motorFrontRight.setPower(-1);
                 motorBackRight.setPower(1);

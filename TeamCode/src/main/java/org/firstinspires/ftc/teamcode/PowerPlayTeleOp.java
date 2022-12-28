@@ -101,6 +101,18 @@ public class PowerPlayTeleOp extends LinearOpMode {
             motorFrontLeft.setPower(vertical + pivot + horizontal);
             motorBackLeft.setPower(vertical + pivot - horizontal);
 
+            telemetry.addData("vertical: ", vertical);
+            telemetry.addData("horizontal: ", horizontal);
+            telemetry.addData("pivot: ", pivot);
+
+            telemetry.addData("frontLeft: ", vertical + pivot + horizontal);
+            telemetry.addData("frontRight: ", vertical - pivot - horizontal);
+            telemetry.addData("backLeft: ", vertical + pivot - horizontal);
+            telemetry.addData("backright: ", vertical - pivot + horizontal);
+
+            telemetry.update();
+
+
             //Open Claw
             if (gamepad1.x) {
                 servoL.setPosition(0.02);
@@ -142,9 +154,9 @@ public class PowerPlayTeleOp extends LinearOpMode {
 
 
             //Print slide encoder data
-            telemetry.addData("Slide L: ", slideL.getCurrentPosition());
-            telemetry.addData("Slide R: ", slideR.getCurrentPosition());
-            telemetry.update();
+//            telemetry.addData("Slide L: ", slideL.getCurrentPosition());
+//            telemetry.addData("Slide R: ", slideR.getCurrentPosition());
+//            telemetry.update();
 
         }
     }
