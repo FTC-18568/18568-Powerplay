@@ -1,28 +1,50 @@
-package org.firstinspires.ftc.teamcode;
+/*
+ * Copyright (c) 2021 OpenFTC Team
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
+/*
+TODO: Add in lens intrinsics values, measure the physical april tag size and enter it here
+TODO: Mount camera and test detection
+
+ */
+
+package org.firstinspires.ftc.teamcode.vision;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
+
 import java.util.ArrayList;
 
 @Autonomous
-//BLUEAUTORIGHT1 - STRAIGHT TO SIGNAL LOCATION
-public class RedAutoLeft1 extends LinearOpMode
+public class AprilTagAutoDetection extends LinearOpMode
 {
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
-    int tagid;
-    Trajectory myTrajectory;
 
     static final double FEET_PER_METER = 3.28084;
 
@@ -43,7 +65,6 @@ public class RedAutoLeft1 extends LinearOpMode
     @Override
     public void runOpMode()
     {
-
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"));
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
@@ -80,7 +101,8 @@ public class RedAutoLeft1 extends LinearOpMode
             {
                 for(AprilTagDetection tag : currentDetections)
                 {
-                    tagid = tag.id;
+                    telemetry.addLine("April Tag Detected at ");
+                    tagToTelemetry(tag);
                 }
             }
             else
@@ -97,40 +119,26 @@ public class RedAutoLeft1 extends LinearOpMode
          * The START command just came in: now work off the latest snapshot acquired
          * during the init loop.
          */
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        Pose2d startPose = new Pose2d(-36, -62, Math.toRadians(90));
-        drive.setPoseEstimate(startPose);
-        switch(tagid) {
-            case 1:
-                myTrajectory = drive.trajectoryBuilder(startPose)
-                        .splineTo(new Vector2d(-52, -59), Math.toRadians(180))
-                        .splineTo(new Vector2d(-60, -36), Math.toRadians(90))
-                        .build();
 
-                break;
-            case 2:
-                myTrajectory = drive.trajectoryBuilder(startPose)
-                        .splineTo(new Vector2d(-36, -36), Math.toRadians(90))
-                        .build();
-                break;
-            case 3:
-                myTrajectory = drive.trajectoryBuilder(startPose)
-                        .splineTo(new Vector2d(-20, -59), Math.toRadians(0))
-                        .splineTo(new Vector2d(-13, -36), Math.toRadians(90))
-                        .build();
-                break;
-        }
+        /* Update the telemetry */
 
 
-        drive.followTrajectory(myTrajectory);
+        /* Driver Pressed Start. Use the detected april tag to determine what to do */
+
 
 
         /* Wait until program ends */
         sleep(30000);
     }
 
-
-
-
-
+    void tagToTelemetry(AprilTagDetection detection)
+    {
+        telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
+        telemetry.addLine(String.format("Translation X: %.2f feet", detection.pose.x*FEET_PER_METER));
+        telemetry.addLine(String.format("Translation Y: %.2f feet", detection.pose.y*FEET_PER_METER));
+        telemetry.addLine(String.format("Translation Z: %.2f feet", detection.pose.z*FEET_PER_METER));
+        telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
+        telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
+        telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
+    }
 }

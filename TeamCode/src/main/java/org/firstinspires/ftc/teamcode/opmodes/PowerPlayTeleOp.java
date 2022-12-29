@@ -3,7 +3,7 @@ Note: Control hub wifi password - 18568-Controlhub
 
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -27,20 +27,20 @@ public class PowerPlayTeleOp extends LinearOpMode {
     public DcMotor  motorBackLeft    = null;
     public DcMotor  motorBackRight    = null;
 
-    public DcMotor slideL = null;
-    public DcMotor slideR = null;
+    public DcMotorEx slideL = null;
+    public DcMotorEx slideR = null;
 
     public Servo servoL = null;
     public Servo servoR = null;
 
-    private double p;
-    private double i;
-    private double d;
-    private double f;
 
     private BNO055IMU imu;
 
     private boolean clawOpen;
+
+    private double vertical;
+    private double horizontal;
+    private double pivot;
 
 
     @Override
@@ -53,8 +53,8 @@ public class PowerPlayTeleOp extends LinearOpMode {
         motorBackLeft   = hardwareMap.get(DcMotor.class, "motorBackLeft");
         motorBackRight  = hardwareMap.get(DcMotor.class, "motorBackRight");
 
-        slideL = hardwareMap.get(DcMotor.class, "slideL");
-        slideR = hardwareMap.get(DcMotor.class, "slideR");
+        slideL = hardwareMap.get(DcMotorEx.class, "slideL");
+        slideR = hardwareMap.get(DcMotorEx.class, "slideR");
 
         servoL = hardwareMap.get(Servo.class, "servoL");
         servoR = hardwareMap.get(Servo.class, "servoR");
@@ -62,8 +62,8 @@ public class PowerPlayTeleOp extends LinearOpMode {
         motorFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         motorBackRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        servoL.setPosition(0.02);
-        servoR.setPosition(0.2);
+        servoL.setPosition(0.0);
+        servoR.setPosition(0.25);
 
         clawOpen = true;
 
@@ -78,18 +78,10 @@ public class PowerPlayTeleOp extends LinearOpMode {
         slideL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slideR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        vertical = 0;
+        horizontal = 0;
+        pivot = 0;
 
-
-        p = 1.622128713;
-        i = 0.1*p;
-        d = 0;
-        f = p*10;
-
-//        slideL.setVelocityPIDFCoefficients(p, i, d, f);
-//        slideR.setVelocityPIDFCoefficients(p, i, d, f);
-//
-//        slideL.setPositionPIDFCoefficients(5.0);
-//        slideR.setPositionPIDFCoefficients(5.0);
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -102,14 +94,47 @@ public class PowerPlayTeleOp extends LinearOpMode {
         while (opModeIsActive()) {
 
             //Drive
-            double vertical = 0.7 * gamepad1.left_stick_y;
-            double horizontal = -0.7 * gamepad1.left_stick_x;
-            double pivot = -0.7 * gamepad1.right_stick_x;
+            if (gamepad1.right_trigger>0.7) {
+                motorFrontRight.setPower(0.1);
+                motorBackRight.setPower(0.1);
+                motorFrontLeft.setPower(0.1);
+                motorBackLeft.setPower(0.1);
+            } else if (gamepad1.left_trigger>0.7) {
+                motorFrontRight.setPower(-0.1);
+                motorBackRight.setPower(-0.1);
+                motorFrontLeft.setPower(-0.1);
+                motorBackLeft.setPower(-0.1);
+            } else {
+                //Set vertical by threshold
+                if (gamepad1.left_stick_y > -0.3 && gamepad1.left_stick_y < 0.3) {
+                    vertical = 0.5 * gamepad1.left_stick_y;
+                } else if (gamepad1.left_stick_y > -0.5 && gamepad1.left_stick_y < 0.5) {
+                    vertical = 0.7 * gamepad1.left_stick_y;
+                } else {
+                    vertical = gamepad1.left_stick_y;
+                }
 
-            motorFrontRight.setPower(vertical - pivot - horizontal);
-            motorBackRight.setPower(vertical - pivot + horizontal);
-            motorFrontLeft.setPower(vertical + pivot + horizontal);
-            motorBackLeft.setPower(vertical + pivot - horizontal);
+                horizontal = -gamepad1.left_stick_x;
+
+                //Set pivot by threshold
+                if (gamepad1.right_stick_x > -0.3 && gamepad1.right_stick_x < 0.3) {
+                    pivot = -0.3 * gamepad1.right_stick_x;
+                } else if (gamepad1.right_stick_x > -0.5 && gamepad1.right_stick_x < 0.5) {
+                    pivot = -0.5 * gamepad1.right_stick_x;
+                } else {
+                    pivot = -gamepad1.right_stick_x;
+                }
+
+                motorFrontRight.setPower(vertical - pivot - horizontal);
+                motorBackRight.setPower(vertical - pivot + horizontal);
+                motorFrontLeft.setPower(vertical + pivot + horizontal);
+                motorBackLeft.setPower(vertical + pivot - horizontal);
+            }
+
+
+
+
+            telemetry.addData("pivot input: ", gamepad1.right_stick_x);
 
 //            telemetry.addData("vertical: ", vertical);
 //            telemetry.addData("horizontal: ", horizontal);
@@ -125,18 +150,16 @@ public class PowerPlayTeleOp extends LinearOpMode {
 
             //Open Claw
             if (gamepad1.x) {
-                servoL.setPosition(0.02);
-                servoR.setPosition(0.2);
+                servoL.setPosition(0.0);
+                servoR.setPosition(0.25);
                 clawOpen = true;
             }
             //Close Claw
             if (gamepad1.a) {
-                servoL.setPosition(0.17);
-                servoR.setPosition(0.05);
+                servoL.setPosition(0.15);
+                servoR.setPosition(0.1);
                 clawOpen = false;
             }
-
-
 
 
             //Raise for high goal
@@ -156,7 +179,7 @@ public class PowerPlayTeleOp extends LinearOpMode {
             }
 
             //Overextension failsafe
-            if (slideL.getCurrentPosition()>2750) {
+            if (slideL.getCurrentPosition() > 2750) {
                 slideL.setPower(0);
                 slideR.setPower(0);
             }
@@ -171,11 +194,12 @@ public class PowerPlayTeleOp extends LinearOpMode {
             }
 
 
-
             //Print slide encoder data
 //            telemetry.addData("Slide L: ", slideL.getCurrentPosition());
 //            telemetry.addData("Slide R: ", slideR.getCurrentPosition());
 //            telemetry.update();
+
+
 
         }
     }
@@ -195,7 +219,7 @@ public class PowerPlayTeleOp extends LinearOpMode {
         slideR.setPower(-0.8);
         while (slideL.isBusy()) {
             telemetry.addData("Slide L position", slideL.getCurrentPosition());
-            //telemetry.addData("Slide L velcoty", slideL.getVelocity());
+            telemetry.addData("Slide L velcoty", slideL.getVelocity());
             telemetry.update();
         }
     }

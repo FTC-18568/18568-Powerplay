@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.vision.AprilTagDetectionPipeline;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 
 @Autonomous
 //BLUEAUTORIGHT1 - STRAIGHT TO SIGNAL LOCATION
-public class BlueAutoLeft1 extends LinearOpMode
+public class RedAutoLeft1 extends LinearOpMode
 {
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
@@ -97,31 +98,26 @@ public class BlueAutoLeft1 extends LinearOpMode
          * The START command just came in: now work off the latest snapshot acquired
          * during the init loop.
          */
-
-        telemetry.addData("Id ", tagid);
-        telemetry.update();
-
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        Pose2d startPose = new Pose2d(36, 62, Math.toRadians(270));
+        Pose2d startPose = new Pose2d(-36, -62, Math.toRadians(90));
         drive.setPoseEstimate(startPose);
-
         switch(tagid) {
             case 1:
                 myTrajectory = drive.trajectoryBuilder(startPose)
-                        .splineTo(new Vector2d(52, 59), Math.toRadians(0))
-                        .splineTo(new Vector2d(60, 36), Math.toRadians(270))
+                        .splineTo(new Vector2d(-52, -59), Math.toRadians(180))
+                        .splineTo(new Vector2d(-60, -36), Math.toRadians(90))
                         .build();
 
                 break;
             case 2:
                 myTrajectory = drive.trajectoryBuilder(startPose)
-                        .splineTo(new Vector2d(36, 36), Math.toRadians(270))
+                        .splineTo(new Vector2d(-36, -36), Math.toRadians(90))
                         .build();
                 break;
             case 3:
                 myTrajectory = drive.trajectoryBuilder(startPose)
-                        .splineTo(new Vector2d(20, 59), Math.toRadians(180))
-                        .splineTo(new Vector2d(13, 36), Math.toRadians(270))
+                        .splineTo(new Vector2d(-20, -59), Math.toRadians(0))
+                        .splineTo(new Vector2d(-13, -36), Math.toRadians(90))
                         .build();
                 break;
         }
