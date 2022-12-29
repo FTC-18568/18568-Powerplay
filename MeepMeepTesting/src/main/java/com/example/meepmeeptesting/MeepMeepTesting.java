@@ -6,6 +6,8 @@ import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
+import java.util.Vector;
+
 public class MeepMeepTesting {
     public static int startingX;
     public static int startingY;
@@ -20,7 +22,7 @@ public class MeepMeepTesting {
         startingX = 0;
         startingY = 0;
         startingAngle = 0;
-        startingPos = 2;
+        startingPos = 1;
 
 
 
@@ -51,10 +53,6 @@ public class MeepMeepTesting {
 
         }
 
-        startingX = -36;
-        startingY = 62;
-        startingAngle = 270;
-
         //https://firstinspiresst01.blob.core.windows.net/first-energize-ftc/game-manual-part-2-traditional.pdf
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
@@ -63,7 +61,21 @@ public class MeepMeepTesting {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .setDimensions(18, 18)
                 .followTrajectorySequence(drive ->
-                                drive.trajectorySequenceBuilder(new Pose2d(0, 0, 0 )) //starting position (x,y)
+                                drive.trajectorySequenceBuilder(new Pose2d(startingX, startingY, Math.toRadians(startingAngle))) //starting position (x,y)
+
+                                        //Drive to the high goal from blue left
+                                        .forward(30)
+                                        .splineTo(new Vector2d(20, 13), Math.toRadians(150))
+                                        .waitSeconds(2)
+                                        .setReversed(true)
+                                        .splineTo(new Vector2d(56, 13), Math.toRadians(0))
+                                        .setReversed(false)
+                                        .splineTo(new Vector2d(20, 13), Math.toRadians(150))
+                                        .setReversed(true)
+                                        .splineTo(new Vector2d(56, 13), Math.toRadians(0))
+                                        .setReversed(false)
+                                        .splineTo(new Vector2d(20, 13), Math.toRadians(150))
+
 
 
                                         //blue location 1 (left team)
