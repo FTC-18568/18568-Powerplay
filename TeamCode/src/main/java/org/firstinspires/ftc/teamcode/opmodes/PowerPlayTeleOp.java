@@ -95,15 +95,25 @@ public class PowerPlayTeleOp extends LinearOpMode {
 
             //Drive
             if (gamepad1.right_trigger>0.7) {
-                motorFrontRight.setPower(0.1);
-                motorBackRight.setPower(0.1);
-                motorFrontLeft.setPower(0.1);
-                motorBackLeft.setPower(0.1);
-            } else if (gamepad1.left_trigger>0.7) {
                 motorFrontRight.setPower(-0.1);
                 motorBackRight.setPower(-0.1);
                 motorFrontLeft.setPower(-0.1);
                 motorBackLeft.setPower(-0.1);
+            } else if (gamepad1.left_trigger>0.7) {
+                motorFrontRight.setPower(0.1);
+                motorBackRight.setPower(0.1);
+                motorFrontLeft.setPower(0.1);
+                motorBackLeft.setPower(0.1);
+            } else if (gamepad1.right_bumper) {
+                motorFrontLeft.setPower(-0.1);
+                motorFrontRight.setPower(0.1);
+                motorBackLeft.setPower(-0.1);
+                motorBackRight.setPower(0.1);
+            } else if (gamepad1.right_bumper) {
+                motorFrontLeft.setPower(0.1);
+                motorFrontRight.setPower(-0.1);
+                motorBackLeft.setPower(0.1);
+                motorBackRight.setPower(-0.1);
             } else {
                 //Set vertical by threshold
                 if (gamepad1.left_stick_y > -0.3 && gamepad1.left_stick_y < 0.3) {
