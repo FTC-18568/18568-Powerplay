@@ -111,16 +111,16 @@ public class PowerPlayTeleOp extends LinearOpMode {
             motorFrontLeft.setPower(vertical + pivot + horizontal);
             motorBackLeft.setPower(vertical + pivot - horizontal);
 
-            telemetry.addData("vertical: ", vertical);
-            telemetry.addData("horizontal: ", horizontal);
-            telemetry.addData("pivot: ", pivot);
-
-            telemetry.addData("frontLeft: ", vertical + pivot + horizontal);
-            telemetry.addData("frontRight: ", vertical - pivot - horizontal);
-            telemetry.addData("backLeft: ", vertical + pivot - horizontal);
-            telemetry.addData("backright: ", vertical - pivot + horizontal);
-
-            telemetry.update();
+//            telemetry.addData("vertical: ", vertical);
+//            telemetry.addData("horizontal: ", horizontal);
+//            telemetry.addData("pivot: ", pivot);
+//
+//            telemetry.addData("frontLeft: ", vertical + pivot + horizontal);
+//            telemetry.addData("frontRight: ", vertical - pivot - horizontal);
+//            telemetry.addData("backLeft: ", vertical + pivot - horizontal);
+//            telemetry.addData("backright: ", vertical - pivot + horizontal);
+//
+//            telemetry.update();
 
 
             //Open Claw
@@ -163,7 +163,9 @@ public class PowerPlayTeleOp extends LinearOpMode {
 
             //Anti-tipping failsafe
             if (slideL.getCurrentPosition()>1500) {
-                if (imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle<-10) {
+                telemetry.addData("IMU Value: ", imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle);
+                telemetry.update();
+                if (imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle<-4) {
                     slideDown(1500);
                 }
             }
@@ -190,7 +192,7 @@ public class PowerPlayTeleOp extends LinearOpMode {
 //        slideL.setVelocity(800);
 //        slideR.setVelocity(-800);
         slideL.setPower(0.8);
-        slideL.setPower(-0.8);
+        slideR.setPower(-0.8);
         while (slideL.isBusy()) {
             telemetry.addData("Slide L position", slideL.getCurrentPosition());
             //telemetry.addData("Slide L velcoty", slideL.getVelocity());
@@ -213,7 +215,7 @@ public class PowerPlayTeleOp extends LinearOpMode {
 //        slideL.setVelocity(-600);
 //        slideR.setVelocity(600);
         slideL.setPower(-0.6);
-        slideL.setPower(0.6);
+        slideR.setPower(0.6);
         while (slideL.isBusy()) {
             telemetry.addData("Slide L position", slideL.getCurrentPosition());
             //telemetry.addData("Slide L velcoty", slideL.getVelocity());
