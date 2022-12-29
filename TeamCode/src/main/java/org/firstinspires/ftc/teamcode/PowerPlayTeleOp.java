@@ -5,6 +5,7 @@ Note: Control hub wifi password - 18568-Controlhub
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -12,6 +13,10 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
 @TeleOp(name="PowerPlay TeleOp", group="PowerPlay")
 public class PowerPlayTeleOp extends LinearOpMode {
@@ -32,6 +37,8 @@ public class PowerPlayTeleOp extends LinearOpMode {
     private double i;
     private double d;
     private double f;
+
+    private BNO055IMU imu;
 
     private boolean clawOpen;
 
@@ -84,7 +91,10 @@ public class PowerPlayTeleOp extends LinearOpMode {
 //        slideL.setPositionPIDFCoefficients(5.0);
 //        slideR.setPositionPIDFCoefficients(5.0);
 
-
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        imu.initialize(parameters);
 
         waitForStart();
 
@@ -149,6 +159,13 @@ public class PowerPlayTeleOp extends LinearOpMode {
             if (slideL.getCurrentPosition()>2750) {
                 slideL.setPower(0);
                 slideR.setPower(0);
+            }
+
+            //Anti-tipping failsafe
+            if (slideL.getCurrentPosition()>1500) {
+                if (imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle<-10) {
+                    slideDown(1500);
+                }
             }
 
 
