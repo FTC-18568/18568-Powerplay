@@ -62,7 +62,7 @@ public class PowerPlayTeleOp extends LinearOpMode {
         motorFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         motorBackRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        servoL.setPosition(0.0);
+        servoL.setPosition(0.02);
         servoR.setPosition(0.25);
 
         clawOpen = true;
