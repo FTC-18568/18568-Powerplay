@@ -95,15 +95,25 @@ public class PowerPlayTeleOp extends LinearOpMode {
 
             //Drive
             if (gamepad1.right_trigger>0.7) {
-                motorFrontRight.setPower(0.1);
-                motorBackRight.setPower(0.1);
-                motorFrontLeft.setPower(0.1);
-                motorBackLeft.setPower(0.1);
-            } else if (gamepad1.left_trigger>0.7) {
                 motorFrontRight.setPower(-0.1);
                 motorBackRight.setPower(-0.1);
                 motorFrontLeft.setPower(-0.1);
                 motorBackLeft.setPower(-0.1);
+            } else if (gamepad1.left_trigger>0.7) {
+                motorFrontRight.setPower(0.1);
+                motorBackRight.setPower(0.1);
+                motorFrontLeft.setPower(0.1);
+                motorBackLeft.setPower(0.1);
+            } else if (gamepad1.right_bumper) {
+                motorFrontLeft.setPower(-0.1);
+                motorFrontRight.setPower(0.1);
+                motorBackLeft.setPower(-0.1);
+                motorBackRight.setPower(0.1);
+            } else if (gamepad1.right_bumper) {
+                motorFrontLeft.setPower(0.1);
+                motorFrontRight.setPower(-0.1);
+                motorBackLeft.setPower(0.1);
+                motorBackRight.setPower(-0.1);
             } else {
                 //Set vertical by threshold
                 if (gamepad1.left_stick_y > -0.3 && gamepad1.left_stick_y < 0.3) {
@@ -136,16 +146,16 @@ public class PowerPlayTeleOp extends LinearOpMode {
 
             telemetry.addData("pivot input: ", gamepad1.right_stick_x);
 
-            telemetry.addData("vertical: ", vertical);
-            telemetry.addData("horizontal: ", horizontal);
-            telemetry.addData("pivot: ", pivot);
-
-            telemetry.addData("frontLeft: ", vertical + pivot + horizontal);
-            telemetry.addData("frontRight: ", vertical - pivot - horizontal);
-            telemetry.addData("backLeft: ", vertical + pivot - horizontal);
-            telemetry.addData("backright: ", vertical - pivot + horizontal);
-
-            telemetry.update();
+//            telemetry.addData("vertical: ", vertical);
+//            telemetry.addData("horizontal: ", horizontal);
+//            telemetry.addData("pivot: ", pivot);
+//
+//            telemetry.addData("frontLeft: ", vertical + pivot + horizontal);
+//            telemetry.addData("frontRight: ", vertical - pivot - horizontal);
+//            telemetry.addData("backLeft: ", vertical + pivot - horizontal);
+//            telemetry.addData("backright: ", vertical - pivot + horizontal);
+//
+//            telemetry.update();
 
 
             //Open Claw
@@ -186,7 +196,9 @@ public class PowerPlayTeleOp extends LinearOpMode {
 
             //Anti-tipping failsafe
             if (slideL.getCurrentPosition()>1500) {
-                if (imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle<-10) {
+                telemetry.addData("IMU Value: ", imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle);
+                telemetry.update();
+                if (imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle<-4) {
                     slideDown(1500);
                 }
             }
