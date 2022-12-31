@@ -45,6 +45,8 @@ public class PowerPlayTeleOp extends LinearOpMode {
     private double slowPower;
     private double drivePower;
 
+    private int slideTarget;
+
 
     @Override
     public void runOpMode() {
@@ -84,6 +86,8 @@ public class PowerPlayTeleOp extends LinearOpMode {
 
         slowPower = 0.25;
         drivePower = 0.8;
+
+        slideTarget = 0;
 
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
@@ -144,20 +148,35 @@ public class PowerPlayTeleOp extends LinearOpMode {
             if (!clawOpen) {
                 //Raise for high goal
                 if (gamepad1.dpad_up) {
-                    slideUp(2650);
+                    slideTarget = 2650;
+                    slideL.setPower(0.95);
+                    slideR.setPower(-0.95);
                 }
                 //Raise for medium goal/low goal
                 if (gamepad1.dpad_right) {
-                    slideUp(1900);
+                    slideTarget = 1900;
+                    slideL.setPower(0.95);
+                    slideR.setPower(-0.95);
                 }
                 //Raise for ground junction
                 if (gamepad1.y) {
-                    slideUp(200);
+                    slideTarget = 200;
+                    slideL.setPower(0.95);
+                    slideR.setPower(-0.95);
                 }
             }
             if (gamepad1.dpad_down) {
-                slideDown(0, true);
+                slideTarget = 5;
+                slideL.setPower(-0.7);
+                slideR.setPower(0.7);
+
             }
+
+            slideL.setTargetPosition(slideTarget);
+            slideR.setTargetPosition(-slideTarget);
+            slideL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            slideR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
 
             //Overextension failsafe
             if (slideL.getCurrentPosition() > 2750) {
@@ -177,24 +196,6 @@ public class PowerPlayTeleOp extends LinearOpMode {
 
 
 
-        }
-    }
-
-    public void slideUp(int slideTarget) {
-        motorFrontRight.setPower(0);
-        motorBackRight.setPower(0);
-        motorFrontLeft.setPower(0);
-        motorBackLeft.setPower(0);
-        slideL.setTargetPosition(slideTarget);
-        slideR.setTargetPosition(-slideTarget);
-        slideL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        slideR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        slideL.setPower(0.95);
-        slideR.setPower(-0.95);
-        while (slideL.isBusy()) {
-            telemetry.addData("Slide L position", slideL.getCurrentPosition());
-            telemetry.addData("Slide L velcoty", slideL.getVelocity());
-            telemetry.update();
         }
     }
 

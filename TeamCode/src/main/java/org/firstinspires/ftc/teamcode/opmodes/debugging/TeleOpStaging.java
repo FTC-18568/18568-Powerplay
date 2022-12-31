@@ -3,7 +3,7 @@ Note: Control hub wifi password - 18568-Controlhub
 
  */
 
-package org.firstinspires.ftc.teamcode.opmodes;
+package org.firstinspires.ftc.teamcode.opmodes.debugging;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -12,15 +12,14 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
-@TeleOp(name="Testing TeleOp", group="PowerPlay")
-public class TestingTeleOp extends LinearOpMode {
+@TeleOp(name="TeleOp Staging", group="PowerPlay")
+public class TeleOpStaging extends LinearOpMode {
 
     /* Declare OpMode members. */
     public DcMotor  motorFrontLeft   = null;
@@ -178,6 +177,11 @@ public class TestingTeleOp extends LinearOpMode {
             slideL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             slideR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+            telemetry.addData("Slide target: ", slideTarget);
+            telemetry.addData("Slide L Position: ", slideL.getCurrentPosition());
+            telemetry.addData("Slide L isBusy(): ", slideL.isBusy());
+            telemetry.update();
+
 
             //Overextension failsafe
             if (slideL.getCurrentPosition() > 2750) {
@@ -186,8 +190,8 @@ public class TestingTeleOp extends LinearOpMode {
 
             //Anti-tipping failsafe
             if (slideL.getCurrentPosition()>1500) {
-                telemetry.addData("IMU Value: ", imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle);
-                telemetry.update();
+//                telemetry.addData("IMU Value: ", imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle);
+//                telemetry.update();
                 if (imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle<-4) {
                     slideDown(1500, false);
                 }
