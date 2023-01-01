@@ -156,6 +156,7 @@ public class PowerPlayTeleOp extends LinearOpMode {
                 }
             }
             if (gamepad1.dpad_down) {
+
                 slideDown(0, true);
             }
 
