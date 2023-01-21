@@ -82,6 +82,7 @@ public class RedAutoLeft1 extends LinearOpMode
                 for(AprilTagDetection tag : currentDetections)
                 {
                     tagid = tag.id;
+                    telemetry.addLine(tagid);
                 }
             }
             else
