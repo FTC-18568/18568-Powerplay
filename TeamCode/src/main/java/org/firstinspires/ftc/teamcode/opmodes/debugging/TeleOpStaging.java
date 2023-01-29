@@ -33,6 +33,8 @@ public class TeleOpStaging extends LinearOpMode {
     public Servo servoL = null;
     public Servo servoR = null;
 
+    public Servo testServo = null;
+
 
     private BNO055IMU imu;
 
@@ -46,6 +48,8 @@ public class TeleOpStaging extends LinearOpMode {
 
     private double slowPower;
     private double drivePower;
+
+    private double maxAmps;
 
 
     @Override
@@ -63,6 +67,8 @@ public class TeleOpStaging extends LinearOpMode {
 
         servoL = hardwareMap.get(Servo.class, "servoL");
         servoR = hardwareMap.get(Servo.class, "servoR");
+
+        testServo = hardwareMap.get(Servo.class, "testServo");
 
         motorFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         motorBackRight.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -89,6 +95,8 @@ public class TeleOpStaging extends LinearOpMode {
 
         slideTarget = 0;
 
+        maxAmps = 0;
+
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -101,38 +109,38 @@ public class TeleOpStaging extends LinearOpMode {
         while (opModeIsActive()) {
 
             //Drive
-            if (gamepad1.right_trigger>0.7) {
-                motorFrontRight.setPower(-slowPower);
-                motorBackRight.setPower(-slowPower);
-                motorFrontLeft.setPower(-slowPower);
-                motorBackLeft.setPower(-slowPower);
-            } else if (gamepad1.left_trigger>0.7) {
-                motorFrontRight.setPower(slowPower);
-                motorBackRight.setPower(slowPower);
-                motorFrontLeft.setPower(slowPower);
-                motorBackLeft.setPower(slowPower);
-            } else if (gamepad1.right_bumper) {
-                motorFrontLeft.setPower(-0.1);
-                motorFrontRight.setPower(0.1);
-                motorBackLeft.setPower(-0.1);
-                motorBackRight.setPower(0.1);
-            } else if (gamepad1.left_bumper) {
-                motorFrontLeft.setPower(0.1);
-                motorFrontRight.setPower(-0.1);
-                motorBackLeft.setPower(0.1);
-                motorBackRight.setPower(-0.1);
-            } else {
-                vertical = drivePower * gamepad1.left_stick_y;
-
-                horizontal = -drivePower * gamepad1.left_stick_x;
-
-                pivot = -drivePower * gamepad1.right_stick_x;
-
-                motorFrontRight.setPower(vertical - pivot - horizontal);
-                motorBackRight.setPower(vertical - pivot + horizontal);
-                motorFrontLeft.setPower(vertical + pivot + horizontal);
-                motorBackLeft.setPower(vertical + pivot - horizontal);
-            }
+//            if (gamepad1.right_trigger>0.7) {
+//                motorFrontRight.setPower(-slowPower);
+//                motorBackRight.setPower(-slowPower);
+//                motorFrontLeft.setPower(-slowPower);
+//                motorBackLeft.setPower(-slowPower);
+//            } else if (gamepad1.left_trigger>0.7) {
+//                motorFrontRight.setPower(slowPower);
+//                motorBackRight.setPower(slowPower);
+//                motorFrontLeft.setPower(slowPower);
+//                motorBackLeft.setPower(slowPower);
+//            } else if (gamepad1.right_bumper) {
+//                motorFrontLeft.setPower(-0.1);
+//                motorFrontRight.setPower(0.1);
+//                motorBackLeft.setPower(-0.1);
+//                motorBackRight.setPower(0.1);
+//            } else if (gamepad1.left_bumper) {
+//                motorFrontLeft.setPower(0.1);
+//                motorFrontRight.setPower(-0.1);
+//                motorBackLeft.setPower(0.1);
+//                motorBackRight.setPower(-0.1);
+//            } else {
+//                vertical = drivePower * gamepad1.left_stick_y;
+//
+//                horizontal = -drivePower * gamepad1.left_stick_x;
+//
+//                pivot = -drivePower * gamepad1.right_stick_x;
+//
+//                motorFrontRight.setPower(vertical - pivot - horizontal);
+//                motorBackRight.setPower(vertical - pivot + horizontal);
+//                motorFrontLeft.setPower(vertical + pivot + horizontal);
+//                motorBackLeft.setPower(vertical + pivot - horizontal);
+//            }
 
 
             //Open Claw
@@ -142,6 +150,13 @@ public class TeleOpStaging extends LinearOpMode {
             //Close Claw
             if (gamepad1.a) {
                 closeClaw();
+            }
+
+            if (gamepad2.x) {
+                testServo.setPosition(1);
+            }
+            if (gamepad2.a) {
+                testServo.setPosition(0);
             }
 
 
@@ -177,9 +192,11 @@ public class TeleOpStaging extends LinearOpMode {
             slideL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             slideR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-            telemetry.addData("Slide target: ", slideTarget);
-            telemetry.addData("Slide L Position: ", slideL.getCurrentPosition());
-            telemetry.addData("Slide L isBusy(): ", slideL.isBusy());
+            telemetry.addData("Slide current: ", slideL.getCurrent(CurrentUnit.AMPS));
+            if (slideL.getCurrent(CurrentUnit.AMPS)>maxAmps) {
+                maxAmps = slideL.getCurrent(CurrentUnit.AMPS);
+            }
+            telemetry.addData("Max current: ", maxAmps);
             telemetry.update();
 
 
@@ -249,7 +266,7 @@ public class TeleOpStaging extends LinearOpMode {
     public void openClaw() {
         clawOpen = true;
         servoL.setPosition(0.02);
-        servoR.setPosition(0.25);
+        servoR.setPosition(0.25);n
     }
 
     public void closeClaw() {
