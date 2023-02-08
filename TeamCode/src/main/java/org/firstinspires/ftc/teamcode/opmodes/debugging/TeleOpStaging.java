@@ -266,7 +266,7 @@ public class TeleOpStaging extends LinearOpMode {
     public void openClaw() {
         clawOpen = true;
         servoL.setPosition(0.02);
-        servoR.setPosition(0.25);n
+        servoR.setPosition(0.25);
     }
 
     public void closeClaw() {
