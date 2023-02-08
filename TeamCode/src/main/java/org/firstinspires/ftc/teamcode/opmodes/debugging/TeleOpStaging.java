@@ -13,10 +13,15 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import org.firstinspires.ftc.teamcode.vision.PoleDetectionPipeline;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
 
 @TeleOp(name="TeleOp Staging", group="PowerPlay")
 public class TeleOpStaging extends LinearOpMode {
@@ -51,6 +56,9 @@ public class TeleOpStaging extends LinearOpMode {
 
     private double maxAmps;
 
+    OpenCvCamera camera;
+    PoleDetectionPipeline poleDetectionPipeline;
+
 
     @Override
     public void runOpMode() {
@@ -81,8 +89,6 @@ public class TeleOpStaging extends LinearOpMode {
         slideL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         slideR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        telemetry.addData("Zero power behavior", slideL.getZeroPowerBehavior());
-
         slideL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slideR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -103,44 +109,68 @@ public class TeleOpStaging extends LinearOpMode {
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         imu.initialize(parameters);
 
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"));
+        poleDetectionPipeline = new PoleDetectionPipeline();
+
+        camera.setPipeline(poleDetectionPipeline);
+        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        {
+            @Override
+            public void onOpened()
+            {
+                camera.startStreaming(800,448, OpenCvCameraRotation.UPRIGHT);
+            }
+
+            @Override
+            public void onError(int errorCode)
+            {
+
+            }
+        });
+
+        telemetry.setMsTransmissionInterval(50);
+
+
+
         waitForStart();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
             //Drive
-//            if (gamepad1.right_trigger>0.7) {
-//                motorFrontRight.setPower(-slowPower);
-//                motorBackRight.setPower(-slowPower);
-//                motorFrontLeft.setPower(-slowPower);
-//                motorBackLeft.setPower(-slowPower);
-//            } else if (gamepad1.left_trigger>0.7) {
-//                motorFrontRight.setPower(slowPower);
-//                motorBackRight.setPower(slowPower);
-//                motorFrontLeft.setPower(slowPower);
-//                motorBackLeft.setPower(slowPower);
-//            } else if (gamepad1.right_bumper) {
-//                motorFrontLeft.setPower(-0.1);
-//                motorFrontRight.setPower(0.1);
-//                motorBackLeft.setPower(-0.1);
-//                motorBackRight.setPower(0.1);
-//            } else if (gamepad1.left_bumper) {
-//                motorFrontLeft.setPower(0.1);
-//                motorFrontRight.setPower(-0.1);
-//                motorBackLeft.setPower(0.1);
-//                motorBackRight.setPower(-0.1);
-//            } else {
-//                vertical = drivePower * gamepad1.left_stick_y;
-//
-//                horizontal = -drivePower * gamepad1.left_stick_x;
-//
-//                pivot = -drivePower * gamepad1.right_stick_x;
-//
-//                motorFrontRight.setPower(vertical - pivot - horizontal);
-//                motorBackRight.setPower(vertical - pivot + horizontal);
-//                motorFrontLeft.setPower(vertical + pivot + horizontal);
-//                motorBackLeft.setPower(vertical + pivot - horizontal);
-//            }
+            if (gamepad1.right_trigger>0.7) {
+                motorFrontRight.setPower(-slowPower);
+                motorBackRight.setPower(-slowPower);
+                motorFrontLeft.setPower(-slowPower);
+                motorBackLeft.setPower(-slowPower);
+            } else if (gamepad1.left_trigger>0.7) {
+                motorFrontRight.setPower(slowPower);
+                motorBackRight.setPower(slowPower);
+                motorFrontLeft.setPower(slowPower);
+                motorBackLeft.setPower(slowPower);
+            } else if (gamepad1.right_bumper) {
+                motorFrontLeft.setPower(-0.1);
+                motorFrontRight.setPower(0.1);
+                motorBackLeft.setPower(-0.1);
+                motorBackRight.setPower(0.1);
+            } else if (gamepad1.left_bumper) {
+                motorFrontLeft.setPower(0.1);
+                motorFrontRight.setPower(-0.1);
+                motorBackLeft.setPower(0.1);
+                motorBackRight.setPower(-0.1);
+            } else {
+                vertical = drivePower * gamepad1.left_stick_y;
+
+                horizontal = -drivePower * gamepad1.left_stick_x;
+
+                pivot = -drivePower * gamepad1.right_stick_x;
+
+                motorFrontRight.setPower(vertical - pivot - horizontal);
+                motorBackRight.setPower(vertical - pivot + horizontal);
+                motorFrontLeft.setPower(vertical + pivot + horizontal);
+                motorBackLeft.setPower(vertical + pivot - horizontal);
+            }
 
 
             //Open Claw
@@ -150,13 +180,6 @@ public class TeleOpStaging extends LinearOpMode {
             //Close Claw
             if (gamepad1.a) {
                 closeClaw();
-            }
-
-            if (gamepad2.x) {
-                testServo.setPosition(1);
-            }
-            if (gamepad2.a) {
-                testServo.setPosition(0);
             }
 
 
@@ -181,10 +204,13 @@ public class TeleOpStaging extends LinearOpMode {
                 }
             }
             if (gamepad1.dpad_down) {
+                closeClaw();
+                if (slideL.getCurrentPosition()<500) {
+                    sleep(600);
+                }
                 slideTarget = 5;
                 slideL.setPower(-0.7);
                 slideR.setPower(0.7);
-
             }
 
             slideL.setTargetPosition(slideTarget);
@@ -192,27 +218,27 @@ public class TeleOpStaging extends LinearOpMode {
             slideL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             slideR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-            telemetry.addData("Slide current: ", slideL.getCurrent(CurrentUnit.AMPS));
-            if (slideL.getCurrent(CurrentUnit.AMPS)>maxAmps) {
-                maxAmps = slideL.getCurrent(CurrentUnit.AMPS);
-            }
-            telemetry.addData("Max current: ", maxAmps);
-            telemetry.update();
-
 
             //Overextension failsafe
             if (slideL.getCurrentPosition() > 2750) {
-                slideDown(1500, false);
+                slideL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                slideR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                slideL.setPower(0);
+                slideR.setPower(0);
             }
 
             //Anti-tipping failsafe
             if (slideL.getCurrentPosition()>1500) {
-//                telemetry.addData("IMU Value: ", imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle);
-//                telemetry.update();
+                telemetry.addData("IMU Value: ", imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle);
+                telemetry.update();
                 if (imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle<-4) {
                     slideDown(1500, false);
                 }
             }
+
+            telemetry.addData("Pole X", poleDetectionPipeline.poleX);
+            telemetry.addData("Pole Y", poleDetectionPipeline.poleY);
+            telemetry.update();
 
 
 
@@ -266,7 +292,7 @@ public class TeleOpStaging extends LinearOpMode {
     public void openClaw() {
         clawOpen = true;
         servoL.setPosition(0.02);
-        servoR.setPosition(0.25);n
+        servoR.setPosition(0.25);
     }
 
     public void closeClaw() {
