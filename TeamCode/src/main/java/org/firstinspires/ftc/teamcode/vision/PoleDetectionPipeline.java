@@ -39,6 +39,7 @@ public class PoleDetectionPipeline extends OpenCvPipeline {
 
     public int poleX = 0;
     public int poleY = 0;
+    public int poleWidth = 0;
 
 
     @Override
@@ -60,10 +61,11 @@ public class PoleDetectionPipeline extends OpenCvPipeline {
 
                 poleX = poleRect.x;
                 poleY = poleRect.y;
+                poleWidth = poleRect.width;
 
 
                 Imgproc.rectangle(input, poleRect, CONTOUR_COLOR, 2);
-                Imgproc.putText(input, "Pole " + (poleRect.x + (poleRect.width/2.0)) +","+(poleRect.y + (poleRect.height/2.0)), new Point(poleRect.x, poleRect.y < 10 ? (poleRect.y+poleRect.height+20) : (poleRect.y - 8)), Imgproc.FONT_HERSHEY_SIMPLEX, 0.8, TEXT_COLOR, 2);
+                Imgproc.putText(input, "Pole " + (poleRect.x + (poleRect.width/2.0)) +","+(poleRect.y + (poleRect.height/2.0)), new Point(poleRect.x, poleRect.y < 10 ? (poleRect.y+poleRect.height+50) : (poleRect.y - 8)), Imgproc.FONT_HERSHEY_SIMPLEX, 0.8, TEXT_COLOR, 2);
                 Imgproc.circle(input, new Point(poleRect.x + (poleRect.width/2.0), poleRect.y + (poleRect.height/2.0)), 3, HORIZON_COLOR, 3);
             }
         }

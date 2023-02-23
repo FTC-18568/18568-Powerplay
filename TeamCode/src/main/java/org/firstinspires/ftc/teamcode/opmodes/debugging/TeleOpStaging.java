@@ -131,12 +131,17 @@ public class TeleOpStaging extends LinearOpMode {
 
         telemetry.setMsTransmissionInterval(50);
 
-
+        telemetry.addData("Pole X", poleDetectionPipeline.poleX);
+        telemetry.addData("Pole Y", poleDetectionPipeline.poleY);
+        telemetry.addData("Pole Width", poleDetectionPipeline.poleWidth);
+        telemetry.update();
 
         waitForStart();
 
+
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+
 
             //Drive
             if (gamepad1.right_trigger>0.7) {
