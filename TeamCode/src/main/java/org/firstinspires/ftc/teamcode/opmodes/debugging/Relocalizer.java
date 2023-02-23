@@ -36,7 +36,7 @@ public class Relocalizer extends LinearOpMode {
 
     private int motorVelocity;
 
-    private double sensorOffset = null;
+    private double sensorOffset;
 
     private BNO055IMU imu;
 
