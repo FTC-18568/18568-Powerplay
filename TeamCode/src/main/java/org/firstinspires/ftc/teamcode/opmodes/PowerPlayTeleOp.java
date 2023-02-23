@@ -182,7 +182,7 @@ public class PowerPlayTeleOp extends LinearOpMode {
 
 
             //Overextension failsafe
-            if (slideL.getCurrentPosition() > 2750) {
+            if (slideL.getCurrentPosition( ) > 2750) {
                 slideL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 slideR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 slideL.setPower(0);

@@ -90,29 +90,51 @@ public class PoleTracking extends LinearOpMode
         }
 
         while(opModeIsActive()) {
-            telemetry.addData("Pole X", poleDetectionPipeline.poleX);
-            telemetry.addData("Pole Y", poleDetectionPipeline.poleY);
-            telemetry.addData("Pole Width", poleDetectionPipeline.poleWidth);
-            telemetry.addData("Pole Center", (poleDetectionPipeline.poleX+(poleDetectionPipeline.poleWidth/2.0)));
-            telemetry.update();
-            if (poleDetectionPipeline.poleX+(poleDetectionPipeline.poleWidth/2.0) < 350) {
-                motorFrontRight.setVelocity(-motorVelocity);
-                motorBackRight.setVelocity(motorVelocity);
-                motorFrontLeft.setVelocity(motorVelocity);
-                motorBackLeft.setVelocity(-motorVelocity);
+            while (poleDetectionPipeline.poleX+(poleDetectionPipeline.poleWidth/2.0)<350
+                    || poleDetectionPipeline.poleX+(poleDetectionPipeline.poleWidth/2.0)>450 && opModeIsActive()) {
+
+                telemetry.addData("Pole X", poleDetectionPipeline.poleX);
+                telemetry.addData("Pole Y", poleDetectionPipeline.poleY);
+                telemetry.addData("Pole Width", poleDetectionPipeline.poleWidth);
+                telemetry.addData("Pole Center", (poleDetectionPipeline.poleX+(poleDetectionPipeline.poleWidth/2.0)));
+                telemetry.update();
+                if (poleDetectionPipeline.poleX+(poleDetectionPipeline.poleWidth/2.0) < 350) {
+                    motorFrontRight.setVelocity(-motorVelocity);
+                    motorBackRight.setVelocity(motorVelocity);
+                    motorFrontLeft.setVelocity(motorVelocity);
+                    motorBackLeft.setVelocity(-motorVelocity);
+                }
+                else if (poleDetectionPipeline.poleX+(poleDetectionPipeline.poleWidth/2.0) > 450) {
+                    motorFrontRight.setVelocity(motorVelocity);
+                    motorBackRight.setVelocity(-motorVelocity);
+                    motorFrontLeft.setVelocity(-motorVelocity);
+                    motorBackLeft.setVelocity(motorVelocity);
+                }
             }
-            else if (poleDetectionPipeline.poleX+(poleDetectionPipeline.poleWidth/2.0) > 450) {
-                motorFrontRight.setVelocity(motorVelocity);
-                motorBackRight.setVelocity(-motorVelocity);
-                motorFrontLeft.setVelocity(-motorVelocity);
-                motorBackLeft.setVelocity(motorVelocity);
+            motorFrontRight.setVelocity(0);
+            motorBackRight.setVelocity(0);
+            motorFrontLeft.setVelocity(0);
+            motorBackLeft.setVelocity(0);
+            while (distanceSensor.getDistance(DistanceUnit.MM)<395 || distanceSensor.getDistance(DistanceUnit.MM)>405 && opModeIsActive()) {
+                if (distanceSensor.getDistance(DistanceUnit.MM)<395) {
+                    motorFrontRight.setVelocity(motorVelocity);
+                    motorBackRight.setVelocity(motorVelocity);
+                    motorFrontLeft.setVelocity(motorVelocity);
+                    motorBackLeft.setVelocity(motorVelocity);
+                } else if (distanceSensor.getDistance(DistanceUnit.MM)>405) {
+                    motorFrontRight.setVelocity(-motorVelocity);
+                    motorBackRight.setVelocity(-motorVelocity);
+                    motorFrontLeft.setVelocity(-motorVelocity);
+                    motorBackLeft.setVelocity(-motorVelocity);
+                }
+                telemetry.addData("Distance sensor", distanceSensor.getDistance(DistanceUnit.MM));
+                telemetry.update();
             }
-            else {
-                motorFrontRight.setVelocity(0);
-                motorBackRight.setVelocity(0);
-                motorFrontLeft.setVelocity(0);
-                motorBackLeft.setVelocity(0);
-            }
+            motorFrontRight.setVelocity(0);
+            motorBackRight.setVelocity(0);
+            motorFrontLeft.setVelocity(0);
+            motorBackLeft.setVelocity(0);
+            sleep(30000);
         }
 
     }
