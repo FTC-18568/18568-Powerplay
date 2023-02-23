@@ -64,19 +64,26 @@ public class MeepMeepTesting {
                                 drive.trajectorySequenceBuilder(new Pose2d(startingX, startingY, Math.toRadians(startingAngle))) //starting position (x,y)
 
                                         //Drive to the high goal from blue left
-                                        .forward(30)
-                                        .splineTo(new Vector2d(20, 13), Math.toRadians(150))
+                                        .forward(40)
+                                        .splineTo(new Vector2d(35, 8), Math.toRadians(215))
                                         .waitSeconds(2)
                                         .setReversed(true)
                                         .splineTo(new Vector2d(56, 13), Math.toRadians(0))
-                                        .setReversed(false)
-                                        .splineTo(new Vector2d(20, 13), Math.toRadians(150))
-                                        .setReversed(true)
-                                        .splineTo(new Vector2d(56, 13), Math.toRadians(0))
-                                        .setReversed(false)
-                                        .splineTo(new Vector2d(20, 13), Math.toRadians(150))
+//                                        .setReversed(false)
+//                                        .splineTo(new Vector2d(20, 13), Math.toRadians(150))
+//                                        .setReversed(true)
+//                                        .splineTo(new Vector2d(56, 13), Math.toRadians(0))
+//                                        .setReversed(false)
+//                                        .splineTo(new Vector2d(20, 13), Math.toRadians(150))
 
 
+
+
+
+
+
+
+                                //EVERYTHING BELOW THIS LINE IS FOR LEAGUE MEETS - OLD CODE
 
                                         //blue location 1 (left team)
 //                                .splineTo(new Vector2d(52, 59), Math.toRadians(0))
