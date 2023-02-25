@@ -98,20 +98,20 @@ public class Relocalizer extends LinearOpMode {
 
         sleep(10000);
 
-        while (poleDetectionPipeline.poleX + (poleDetectionPipeline.poleWidth / 2.0) < 350
-                || poleDetectionPipeline.poleX + (poleDetectionPipeline.poleWidth / 2.0) > 450 && opModeIsActive()) {
+        while (poleDetectionPipeline.poleX + (poleDetectionPipeline.poleWidth / 2.0) < 375
+                || poleDetectionPipeline.poleX + (poleDetectionPipeline.poleWidth / 2.0) > 425 && opModeIsActive()) {
 
             telemetry.addData("Pole X", poleDetectionPipeline.poleX);
             telemetry.addData("Pole Y", poleDetectionPipeline.poleY);
             telemetry.addData("Pole Width", poleDetectionPipeline.poleWidth);
             telemetry.addData("Pole Center", (poleDetectionPipeline.poleX + (poleDetectionPipeline.poleWidth / 2.0)));
             telemetry.update();
-            if (poleDetectionPipeline.poleX + (poleDetectionPipeline.poleWidth / 2.0) < 350) {
+            if (poleDetectionPipeline.poleX + (poleDetectionPipeline.poleWidth / 2.0) < 375) {
                 motorFrontRight.setVelocity(-motorVelocity);
                 motorBackRight.setVelocity(motorVelocity);
                 motorFrontLeft.setVelocity(motorVelocity);
                 motorBackLeft.setVelocity(-motorVelocity);
-            } else if (poleDetectionPipeline.poleX + (poleDetectionPipeline.poleWidth / 2.0) > 450) {
+            } else if (poleDetectionPipeline.poleX + (poleDetectionPipeline.poleWidth / 2.0) > 425) {
                 motorFrontRight.setVelocity(motorVelocity);
                 motorBackRight.setVelocity(-motorVelocity);
                 motorFrontLeft.setVelocity(-motorVelocity);
@@ -122,6 +122,7 @@ public class Relocalizer extends LinearOpMode {
         motorBackRight.setVelocity(0);
         motorFrontLeft.setVelocity(0);
         motorBackLeft.setVelocity(0);
+
         while (distanceSensor.getDistance(DistanceUnit.MM) < 395 || distanceSensor.getDistance(DistanceUnit.MM) > 405 && opModeIsActive()) {
             if (distanceSensor.getDistance(DistanceUnit.MM) < 395) {
                 motorFrontRight.setVelocity(motorVelocity);
@@ -142,7 +143,7 @@ public class Relocalizer extends LinearOpMode {
         motorFrontLeft.setVelocity(0);
         motorBackLeft.setVelocity(0);
 
-        double distance = distanceSensor.getDistance(DistanceUnit.MM)-sensorOffset;
+        double distance = distanceSensor.getDistance(DistanceUnit.MM);
         double angle = Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).thirdAngle);
 
         double x_offset = distance*Math.sin(Math.toRadians(angle));
@@ -150,6 +151,7 @@ public class Relocalizer extends LinearOpMode {
 
         telemetry.addData("X Offset", x_offset);
         telemetry.addData("Y Offset", y_offset);
+        telemetry.addData("Distance", distance);
         telemetry.update();
 
 

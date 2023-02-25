@@ -38,7 +38,8 @@ public class TeleOpStaging extends LinearOpMode {
     public Servo servoL = null;
     public Servo servoR = null;
 
-    public Servo testServo = null;
+    public Servo v4bL = null;
+    public Servo v4bR = null;
 
 
     private BNO055IMU imu;
@@ -56,8 +57,6 @@ public class TeleOpStaging extends LinearOpMode {
 
     private double maxAmps;
 
-    OpenCvCamera camera;
-    PoleDetectionPipeline poleDetectionPipeline;
 
 
     @Override
@@ -76,7 +75,8 @@ public class TeleOpStaging extends LinearOpMode {
         servoL = hardwareMap.get(Servo.class, "servoL");
         servoR = hardwareMap.get(Servo.class, "servoR");
 
-        testServo = hardwareMap.get(Servo.class, "testServo");
+        v4bL = hardwareMap.get(Servo.class, "v4BL");
+        v4bR = hardwareMap.get(Servo.class, "v4BR");
 
         motorFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         motorBackRight.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -109,32 +109,7 @@ public class TeleOpStaging extends LinearOpMode {
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         imu.initialize(parameters);
 
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"));
-        poleDetectionPipeline = new PoleDetectionPipeline();
 
-        camera.setPipeline(poleDetectionPipeline);
-        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
-        {
-            @Override
-            public void onOpened()
-            {
-                camera.startStreaming(800,448, OpenCvCameraRotation.UPRIGHT);
-            }
-
-            @Override
-            public void onError(int errorCode)
-            {
-
-            }
-        });
-
-        telemetry.setMsTransmissionInterval(50);
-
-        telemetry.addData("Pole X", poleDetectionPipeline.poleX);
-        telemetry.addData("Pole Y", poleDetectionPipeline.poleY);
-        telemetry.addData("Pole Width", poleDetectionPipeline.poleWidth);
-        telemetry.update();
 
         waitForStart();
 
@@ -180,11 +155,15 @@ public class TeleOpStaging extends LinearOpMode {
 
             //Open Claw
             if (gamepad1.x) {
-                openClaw();
+//                openClaw();
+                v4bL.setPosition(0.5);
+                v4bR.setPosition(0.5);
             }
             //Close Claw
             if (gamepad1.a) {
-                closeClaw();
+//                closeClaw();
+                v4bL.setPosition(1);
+                v4bR.setPosition(0 );
             }
 
 
@@ -241,8 +220,10 @@ public class TeleOpStaging extends LinearOpMode {
                 }
             }
 
-            telemetry.addData("Pole X", poleDetectionPipeline.poleX);
-            telemetry.addData("Pole Y", poleDetectionPipeline.poleY);
+            telemetry.addData("Front Left", motorFrontLeft.getCurrentPosition());
+            telemetry.addData("Front Right", motorFrontRight.getCurrentPosition());
+            telemetry.addData("Back Left", motorBackLeft.getCurrentPosition());
+            telemetry.addData("Back Right", motorBackRight.getCurrentPosition());
             telemetry.update();
 
 
