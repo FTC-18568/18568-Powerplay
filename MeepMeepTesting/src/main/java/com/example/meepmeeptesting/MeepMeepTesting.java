@@ -66,7 +66,10 @@ public class MeepMeepTesting {
                                         //Drive to the high goal from blue left
                                         .forward(40)
                                         .splineTo(new Vector2d(35, 8), Math.toRadians(215))
+
                                         .waitSeconds(2)
+
+                                        //Drive to cones from pole
                                         .setReversed(true)
                                         .splineTo(new Vector2d(56, 13), Math.toRadians(0))
 //                                        .setReversed(false)
