@@ -11,7 +11,7 @@ import java.util.Vector;
 public class MeepMeepTesting {
     public static int startingX;
     public static int startingY;
-    public static int startingPos; //blue  left = 1, blue right = 2, red left = 3, red right  = 4;
+    public static int startingPos; //blue  left = 1, blue right = 2, red left = 3, red right = 4;
     public static int startingAngle;
 
 
