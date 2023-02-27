@@ -22,7 +22,7 @@ public class MeepMeepTesting {
         startingX = 0;
         startingY = 0;
         startingAngle = 0;
-        startingPos = 1;
+        startingPos = 4;
 
 
 
@@ -63,6 +63,37 @@ public class MeepMeepTesting {
                 .followTrajectorySequence(drive ->
                                 drive.trajectorySequenceBuilder(new Pose2d(startingX, startingY, Math.toRadians(startingAngle))) //starting position (x,y)
 
+                                        //blue left
+//                                        .forward(40)
+//                                        .splineTo(new Vector2d(35, 8), Math.toRadians(215))
+//                                        .waitSeconds(2)
+//                                        .setReversed(true)
+//                                        .splineTo(new Vector2d(56, 13), Math.toRadians(0))
+
+                                        //blue right
+//                                        .forward(40)
+//                                        .splineTo(new Vector2d(-35, 8), Math.toRadians(325))
+//                                        .waitSeconds(2)
+//                                        .setReversed(true)
+//                                        .splineTo(new Vector2d(-56, 13), Math.toRadians(180))
+
+                                        //red left
+//                                        .forward(40)
+//                                        .splineTo(new Vector2d(-35, -8), Math.toRadians(35))
+//                                        .waitSeconds(2)
+//                                        .setReversed(true)
+//                                        .splineTo(new Vector2d(-56, -13), Math.toRadians(180))
+
+                                        //red right
+
+//                                        .forward(40)
+//                                        .splineTo(new Vector2d(35, -8), Math.toRadians(145))
+//                                        .waitSeconds(2)
+//                                        .setReversed(true)
+//                                        .splineTo(new Vector2d(56, -13), Math.toRadians(0))
+
+
+                                        /*
                                         //Drive to the high goal from blue left
                                         .forward(40)
                                         .splineTo(new Vector2d(35, 8), Math.toRadians(215))
@@ -79,7 +110,7 @@ public class MeepMeepTesting {
 //                                        .setReversed(false)
 //                                        .splineTo(new Vector2d(20, 13), Math.toRadians(150))
 
-
+                                         */
 
 
 
