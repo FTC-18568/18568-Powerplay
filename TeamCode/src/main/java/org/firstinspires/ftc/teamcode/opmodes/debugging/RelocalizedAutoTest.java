@@ -74,12 +74,9 @@ public class RelocalizedAutoTest extends LinearOpMode
 
         motorVelocity = 300;
 
-        motorFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        motorBackRight.setDirection(DcMotorSimple.Direction.REVERSE);
-
         distanceSensor = hardwareMap.get(DistanceSensor.class, "Distance");
 
-        sensorOffset = -127.0;
+        sensorOffset = 139.7;
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -123,20 +120,18 @@ public class RelocalizedAutoTest extends LinearOpMode
             telemetry.addData("Distance sensor", distanceSensor.getDistance(DistanceUnit.MM));
             telemetry.update();
 
-            /*
-             * The START command just came in: now work off the latest snapshot acquired
-             * during the init loop.
-             */
 
-            drive.followTrajectory(startToPole);
 
 
         }
 
+        /*
+         * The START command just came in: now work off the latest snapshot acquired
+         * during the init loop.
+         */
 
 
-
-
+        drive.followTrajectory(startToPole);
 
         /* Wait until program ends */
         sleep(30000);

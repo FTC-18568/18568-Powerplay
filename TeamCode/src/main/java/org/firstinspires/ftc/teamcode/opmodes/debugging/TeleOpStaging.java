@@ -27,10 +27,10 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 public class TeleOpStaging extends LinearOpMode {
 
     /* Declare OpMode members. */
-    public DcMotor  motorFrontLeft   = null;
-    public DcMotor  motorFrontRight  = null;
-    public DcMotor  motorBackLeft    = null;
-    public DcMotor  motorBackRight    = null;
+    public DcMotorEx  motorFrontLeft   = null;
+    public DcMotorEx  motorFrontRight  = null;
+    public DcMotorEx  motorBackLeft    = null;
+    public DcMotorEx  motorBackRight    = null;
 
     public DcMotorEx slideL = null;
     public DcMotorEx slideR = null;
@@ -64,10 +64,10 @@ public class TeleOpStaging extends LinearOpMode {
         //Initialization Period
 
         // Define and Initialize Motors
-        motorFrontLeft  = hardwareMap.get(DcMotor.class, "motorFrontLeft");
-        motorFrontRight = hardwareMap.get(DcMotor.class, "motorFrontRight");
-        motorBackLeft   = hardwareMap.get(DcMotor.class, "motorBackLeft");
-        motorBackRight  = hardwareMap.get(DcMotor.class, "motorBackRight");
+        motorFrontLeft  = hardwareMap.get(DcMotorEx.class, "motorFrontLeft");
+        motorFrontRight = hardwareMap.get(DcMotorEx.class, "motorFrontRight");
+        motorBackLeft   = hardwareMap.get(DcMotorEx.class, "motorBackLeft");
+        motorBackRight  = hardwareMap.get(DcMotorEx.class, "motorBackRight");
 
         slideL = hardwareMap.get(DcMotorEx.class, "slideL");
         slideR = hardwareMap.get(DcMotorEx.class, "slideR");
@@ -89,6 +89,11 @@ public class TeleOpStaging extends LinearOpMode {
         slideL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         slideR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         slideL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slideR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -97,7 +102,7 @@ public class TeleOpStaging extends LinearOpMode {
         pivot = 0;
 
         slowPower = 0.25;
-        drivePower = 0.8;
+        drivePower = 0.7;
 
         slideTarget = 0;
 
@@ -162,8 +167,12 @@ public class TeleOpStaging extends LinearOpMode {
             //Close Claw
             if (gamepad1.a) {
 //                closeClaw();
-                v4bL.setPosition(1);
-                v4bR.setPosition(0 );
+//                v4bL.setPosition(1);
+//                v4bR.setPosition(0 );
+                motorFrontRight.setPower(drivePower);
+                motorBackRight.setPower(drivePower);
+                motorFrontLeft.setPower(drivePower);
+                motorBackLeft.setPower(drivePower);
             }
 
 

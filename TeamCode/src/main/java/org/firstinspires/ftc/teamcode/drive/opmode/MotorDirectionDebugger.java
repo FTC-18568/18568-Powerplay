@@ -83,6 +83,7 @@ public class MotorDirectionDebugger extends LinearOpMode {
             } else if(gamepad1.a) {
                 drive.setMotorPowers(0, MOTOR_POWER, 0, 0);
                 telemetry.addLine("Running Motor: Rear Left");
+
             } else {
                 drive.setMotorPowers(0, 0, 0, 0);
                 telemetry.addLine("Running Motor: None");

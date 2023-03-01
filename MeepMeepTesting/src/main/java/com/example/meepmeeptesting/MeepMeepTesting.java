@@ -70,8 +70,8 @@ public class MeepMeepTesting {
                                         .waitSeconds(2)
 
                                         //Drive to cones from pole
-                                        .setReversed(true)
-                                        .splineTo(new Vector2d(56, 13), Math.toRadians(0))
+                                        //.setReversed(true)
+                                        //.splineTo(new Vector2d(56, 13), Math.toRadians(0))
 //                                        .setReversed(false)
 //                                        .splineTo(new Vector2d(20, 13), Math.toRadians(150))
 //                                        .setReversed(true)
