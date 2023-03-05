@@ -56,7 +56,7 @@ public class Relocalizer extends LinearOpMode {
 
         distanceSensor = hardwareMap.get(DistanceSensor.class, "Distance");
 
-        sensorOffset = -127.0;
+        sensorOffset = 139.7;
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
