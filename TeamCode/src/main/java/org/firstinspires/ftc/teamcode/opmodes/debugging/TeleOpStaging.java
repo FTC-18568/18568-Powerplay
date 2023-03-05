@@ -155,16 +155,26 @@ public class TeleOpStaging extends LinearOpMode {
 
             //Open Claw
             if (gamepad1.x) {
-//                openClaw();
-                v4bL.setPosition(0.5);
-                v4bR.setPosition(0.5);
+                openClaw();
+
             }
             //Close Claw
             if (gamepad1.a) {
-//                closeClaw();
-                v4bL.setPosition(1);
-                v4bR.setPosition(0 );
+                closeClaw();
+
             }
+
+            //Open Claw
+            if (gamepad2.x) {
+                v4bL.setPosition(0.15);
+                v4bR.setPosition(0.78);
+            }
+            //Close Claw
+            if (gamepad2.a) {
+                v4bL.setPosition(0.75);
+                v4bR.setPosition(0.18);
+            }
+
 
 
             if (!clawOpen) {
