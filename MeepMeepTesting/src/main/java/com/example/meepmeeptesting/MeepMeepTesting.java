@@ -65,15 +65,16 @@ public class MeepMeepTesting {
 
                                         //Drive to the high goal from blue left
                                         .forward(40)
-                                        .splineTo(new Vector2d(35, 8), Math.toRadians(215))
+                                        .splineTo(new Vector2d(35, 12), Math.toRadians(215))
 
                                         .waitSeconds(2)
 
                                         //Drive to cones from pole
-                                        //.setReversed(true)
-                                        //.splineTo(new Vector2d(56, 13), Math.toRadians(0))
-//                                        .setReversed(false)
-//                                        .splineTo(new Vector2d(20, 13), Math.toRadians(150))
+                                        .setReversed(true)
+                                        .splineTo(new Vector2d(56, 12), Math.toRadians(0))
+                                        .setReversed(false)
+                                        .forward(5)
+                                        .splineTo(new Vector2d(35, 10), Math.toRadians(215))
 //                                        .setReversed(true)
 //                                        .splineTo(new Vector2d(56, 13), Math.toRadians(0))
 //                                        .setReversed(false)
