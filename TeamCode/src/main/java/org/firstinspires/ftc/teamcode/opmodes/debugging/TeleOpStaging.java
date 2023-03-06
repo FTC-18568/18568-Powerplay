@@ -170,13 +170,15 @@ public class TeleOpStaging extends LinearOpMode {
 
             //Open Claw
             if (gamepad2.x) {
-                v4bL.setPosition(0.15);
-                v4bR.setPosition(0.78);
+                //v4bL = 0.5
+                //v4bR = 0.43
+                v4bL.setPosition(0.2);
+                v4bR.setPosition(0.73);
             }
             //Close Claw
             if (gamepad2.a) {
-                v4bL.setPosition(0.75);
-                v4bR.setPosition(0.18);
+                v4bL.setPosition(0.93);
+                v4bR.setPosition(0);
             }
 
 
@@ -184,13 +186,13 @@ public class TeleOpStaging extends LinearOpMode {
             if (!clawOpen) {
                 //Raise for high goal
                 if (gamepad1.dpad_up) {
-                    slideTarget = 2650;
+                    slideTarget = 2200;
                     slideL.setPower(0.95);
                     slideR.setPower(-0.95);
                 }
                 //Raise for medium goal/low goal
                 if (gamepad1.dpad_right) {
-                    slideTarget = 1900;
+                    slideTarget = 1800;
                     slideL.setPower(0.95);
                     slideR.setPower(-0.95);
                 }
