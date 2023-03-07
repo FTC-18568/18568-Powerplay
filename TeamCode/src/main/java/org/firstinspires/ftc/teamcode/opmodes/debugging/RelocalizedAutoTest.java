@@ -150,35 +150,37 @@ public class RelocalizedAutoTest extends LinearOpMode
          */
 
 
-        //Drive to pole
-        drive.followTrajectory(startToPole);
-        sleep(2000);
+        while (opModeIsActive()) {
+            //Drive to pole
+            drive.followTrajectory(startToPole);
+            sleep(2000);
 
-        //Align the robot and get new position
-        align();
-        sleep(1000);
+            //Align the robot and get new position
+            align();
+            sleep(1000);
 
-        relocalizedPose = relocalize();
-        drive.setPoseEstimate(relocalizedPose);
-        poleToCone = drive.trajectoryBuilder(relocalizedPose, true)
-                .splineTo(new Vector2d(56, 12), Math.toRadians(0))
-                .build();
+            relocalizedPose = relocalize();
+            drive.setPoseEstimate(relocalizedPose);
+            poleToCone = drive.trajectoryBuilder(relocalizedPose, true)
+                    .splineTo(new Vector2d(56.5, 12), Math.toRadians(0))
+                    .build();
 
-        sleep(1000);
+            sleep(1000);
 
-        //Drive to cones
-        drive.followTrajectory(poleToCone);
+            //Drive to cones
+            drive.followTrajectory(poleToCone);
 
-        sleep(1000);
-        cycle(drive);
-        sleep(1000);
-        cycle(drive);
-        sleep(1000);
-        cycle(drive);
+            sleep(2000);
+            cycle(drive);
+            sleep(1000);
+            cycle(drive);
+            sleep(1000);
+            cycle(drive);
 
 
-        /* Wait until program ends */
-        sleep(30000);
+            /* Wait until program ends */
+            sleep(30000);
+        }
     }
 
     public void cycle(SampleMecanumDrive drive) {
@@ -194,7 +196,7 @@ public class RelocalizedAutoTest extends LinearOpMode
         relocalizedPose = relocalize();
         drive.setPoseEstimate(relocalizedPose);
         poleToCone = drive.trajectoryBuilder(relocalizedPose, true)
-                .splineTo(new Vector2d(56, 13), Math.toRadians(0))
+                .splineTo(new Vector2d(56, 12), Math.toRadians(0))
                 .build();
 
         //Drive to cones
@@ -223,8 +225,8 @@ public class RelocalizedAutoTest extends LinearOpMode
     }
 
     public void align() {
-        while (poleDetectionPipeline.poleX + (poleDetectionPipeline.poleWidth / 2.0) < 375
-                || poleDetectionPipeline.poleX + (poleDetectionPipeline.poleWidth / 2.0) > 425 && opModeIsActive()) {
+        while ((poleDetectionPipeline.poleX + (poleDetectionPipeline.poleWidth / 2.0) < 375
+                || poleDetectionPipeline.poleX + (poleDetectionPipeline.poleWidth / 2.0) > 425) && opModeIsActive()) {
 
             telemetry.addData("Pole X", poleDetectionPipeline.poleX);
             telemetry.addData("Pole Y", poleDetectionPipeline.poleY);
@@ -248,7 +250,7 @@ public class RelocalizedAutoTest extends LinearOpMode
         motorFrontLeft.setVelocity(0);
         motorBackLeft.setVelocity(0);
 
-        while (distanceSensor.getDistance(DistanceUnit.MM) < 85 || distanceSensor.getDistance(DistanceUnit.MM) > 95 && opModeIsActive()) {
+        while ((distanceSensor.getDistance(DistanceUnit.MM) < 85 || distanceSensor.getDistance(DistanceUnit.MM) > 95) && opModeIsActive()) {
             if (distanceSensor.getDistance(DistanceUnit.MM) < 85) {
                 motorFrontRight.setVelocity(-motorVelocity);
                 motorBackRight.setVelocity(-motorVelocity);

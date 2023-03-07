@@ -22,7 +22,7 @@ public class MeepMeepTesting {
         startingX = 0;
         startingY = 0;
         startingAngle = 0;
-        startingPos = 4;
+        startingPos = 1;
 
 
 
@@ -30,7 +30,7 @@ public class MeepMeepTesting {
             case 1: //blue left
                 //Log.d("myTag", "This is my message 1");
                 startingX = 36;
-                startingY = 62;
+                startingY = 60;
                 startingAngle = 270;
                 break;
             case 2: //blue right
@@ -64,11 +64,11 @@ public class MeepMeepTesting {
                                 drive.trajectorySequenceBuilder(new Pose2d(startingX, startingY, Math.toRadians(startingAngle))) //starting position (x,y)
 
                                         //blue left
-//                                        .forward(40)
-//                                        .splineTo(new Vector2d(35, 8), Math.toRadians(215))
-//                                        .waitSeconds(2)
-//                                        .setReversed(true)
-//                                        .splineTo(new Vector2d(56, 13), Math.toRadians(0))
+                                        .forward(40)
+                                        .splineTo(new Vector2d(35, 10), Math.toRadians(215))
+                                        .waitSeconds(2)
+                                        .setReversed(true)
+                                        .splineTo(new Vector2d(58, 12), Math.toRadians(0))
 
                                         //blue right
 //                                        .forward(40)
@@ -95,17 +95,17 @@ public class MeepMeepTesting {
 
 
                                         //Drive to the high goal from blue left
-                                        .forward(40)
-                                        .splineTo(new Vector2d(35, 12), Math.toRadians(215))
-
-                                        .waitSeconds(2)
-
-                                        //Drive to cones from pole
-                                        .setReversed(true)
-                                        .splineTo(new Vector2d(56, 12), Math.toRadians(0))
-                                        .setReversed(false)
-                                        .forward(5)
-                                        .splineTo(new Vector2d(35, 10), Math.toRadians(215))
+//                                        .forward(40)
+//                                        .splineTo(new Vector2d(35, 12), Math.toRadians(215))
+//
+//                                        .waitSeconds(2)
+//
+//                                        //Drive to cones from pole
+//                                        .setReversed(true)
+//                                        .splineTo(new Vector2d(56, 12), Math.toRadians(0))
+//                                        .setReversed(false)
+//                                        .forward(5)
+//                                        .splineTo(new Vector2d(35, 10), Math.toRadians(215))
 //                                        .setReversed(true)
 //                                        .splineTo(new Vector2d(56, 13), Math.toRadians(0))
 //                                        .setReversed(false)
