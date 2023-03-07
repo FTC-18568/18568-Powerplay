@@ -187,20 +187,20 @@ public class TeleOpStaging extends LinearOpMode {
                 //Raise for high goal
                 if (gamepad1.dpad_up) {
                     slideTarget = 2200;
-                    slideL.setPower(0.95);
-                    slideR.setPower(-0.95);
+                    slideL.setPower(1);
+                    slideR.setPower(-1);
                 }
                 //Raise for medium goal/low goal
                 if (gamepad1.dpad_right) {
                     slideTarget = 1800;
-                    slideL.setPower(0.95);
-                    slideR.setPower(-0.95);
+                    slideL.setPower(1);
+                    slideR.setPower(-1);
                 }
                 //Raise for ground junction
                 if (gamepad1.y) {
                     slideTarget = 200;
-                    slideL.setPower(0.95);
-                    slideR.setPower(-0.95);
+                    slideL.setPower(1);
+                    slideR.setPower(-1);
                 }
             }
             if (gamepad1.dpad_down) {
