@@ -93,7 +93,7 @@ public class MeepMeepTesting {
 //                                        .splineTo(new Vector2d(56, -13), Math.toRadians(0))
 
 
-                                        /*
+
                                         //Drive to the high goal from blue left
                                         .forward(40)
                                         .splineTo(new Vector2d(35, 12), Math.toRadians(215))
@@ -111,7 +111,7 @@ public class MeepMeepTesting {
 //                                        .setReversed(false)
 //                                        .splineTo(new Vector2d(20, 13), Math.toRadians(150))
 
-                                         */
+
 
 
 
