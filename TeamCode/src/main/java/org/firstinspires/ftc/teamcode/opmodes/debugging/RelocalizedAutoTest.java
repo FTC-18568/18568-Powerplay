@@ -10,13 +10,16 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.Servo;
 
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.vision.AprilTagDetectionPipeline;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.vision.PoleDetectionPipeline;
@@ -33,7 +36,7 @@ public class RelocalizedAutoTest extends LinearOpMode
 {
     OpenCvCamera camera;
     Trajectory startToPole;
-    Trajectory poleToCone;
+    TrajectorySequence poleToCone;
     Trajectory coneToPole;
 
     PoleDetectionPipeline poleDetectionPipeline;
@@ -53,20 +56,14 @@ public class RelocalizedAutoTest extends LinearOpMode
 
     private BNO055IMU imu;
 
-    static final double FEET_PER_METER = 3.28084;
+    public DcMotorEx slideL = null;
+    public DcMotorEx slideR = null;
 
-    // Lens intrinsics
-    // UNITS ARE PIXELS
-    // NOTE: this calibration is for the C920 webcam at 800x448.
-    // I have been told that the default values are sufficient for detection.
-    // The calibrated values are in res/xml/teamwebcamcalibrations.xml
-    double fx = 578.272;
-    double fy = 578.272;
-    double cx = 402.145;
-    double cy = 221.506;
+    public Servo servoL = null;
+    public Servo servoR = null;
 
-    // UNITS ARE METERS
-    double tagsize = 0.035;
+    public Servo v4bL = null;
+    public Servo v4bR = null;
 
 
     @Override
@@ -95,7 +92,6 @@ public class RelocalizedAutoTest extends LinearOpMode
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         imu.initialize(parameters);
 
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"));
         poleDetectionPipeline = new PoleDetectionPipeline();
 
@@ -115,6 +111,27 @@ public class RelocalizedAutoTest extends LinearOpMode
                 .forward(5)
                 .splineTo(new Vector2d(35, 10), Math.toRadians(215))
                 .build();
+
+        slideL = hardwareMap.get(DcMotorEx.class, "slideL");
+        slideR = hardwareMap.get(DcMotorEx.class, "slideR");
+
+        v4bL = hardwareMap.get(Servo.class, "v4BL");
+        v4bR = hardwareMap.get(Servo.class, "v4BR");
+
+
+        slideL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slideR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        slideL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        slideR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        slideL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slideR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        servoL = hardwareMap.get(Servo.class, "servoL");
+        servoR = hardwareMap.get(Servo.class, "servoR");
+
+
 
         camera.setPipeline(poleDetectionPipeline);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
@@ -161,21 +178,38 @@ public class RelocalizedAutoTest extends LinearOpMode
 
             relocalizedPose = relocalize();
             drive.setPoseEstimate(relocalizedPose);
-            poleToCone = drive.trajectoryBuilder(relocalizedPose, true)
-                    .splineTo(new Vector2d(56.5, 12), Math.toRadians(0))
+
+            poleToCone = drive.trajectorySequenceBuilder(relocalizedPose)
+                    .back(4)
+                    .setReversed(true)
+                    .waitSeconds(5)
+                    .splineTo(new Vector2d(56.5, 14), Math.toRadians(0))
                     .build();
 
             sleep(1000);
 
-            //Drive to cones
-            drive.followTrajectory(poleToCone);
 
-            sleep(2000);
-            cycle(drive);
-            sleep(1000);
-            cycle(drive);
-            sleep(1000);
-            cycle(drive);
+
+            servoL.setPosition(0.02);
+            servoR.setPosition(0.25);
+
+            //Drive to cones
+            drive.followTrajectorySequence(poleToCone);
+
+            v4bL.setPosition(0.35);
+            v4bR.setPosition(0.58);
+
+
+            slideL.setPower(0.2);
+            slideR.setPower(-0.2);
+            slideL.setTargetPosition(210);
+            slideR.setTargetPosition(-210);
+            slideL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            slideR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            while (slideL.isBusy() && opModeIsActive()) {
+                telemetry.addData("Slide L", slideL.getCurrent(CurrentUnit.AMPS));
+            }
 
 
             /* Wait until program ends */
@@ -195,12 +229,12 @@ public class RelocalizedAutoTest extends LinearOpMode
 
         relocalizedPose = relocalize();
         drive.setPoseEstimate(relocalizedPose);
-        poleToCone = drive.trajectoryBuilder(relocalizedPose, true)
-                .splineTo(new Vector2d(56, 12), Math.toRadians(0))
-                .build();
+//        poleToCone = drive.trajectoryBuilder(relocalizedPose, true)
+//                .splineTo(new Vector2d(56, 12), Math.toRadians(0))
+//                .build();
 
         //Drive to cones
-        drive.followTrajectory(poleToCone);
+//        drive.followTrajectory(poleToCone);
     }
 
     //Get new position

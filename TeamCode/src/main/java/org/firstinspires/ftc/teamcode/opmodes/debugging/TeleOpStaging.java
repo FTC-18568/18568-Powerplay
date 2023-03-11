@@ -101,7 +101,7 @@ public class TeleOpStaging extends LinearOpMode {
         horizontal = 0;
         pivot = 0;
 
-        slowPower = 0.25;
+        slowPower = 0.20;
         drivePower = 0.7;
 
         slideTarget = 0;
@@ -159,26 +159,21 @@ public class TeleOpStaging extends LinearOpMode {
 
 
             //Open Claw
-            if (gamepad1.x) {
+            if (gamepad1.b) {
+                v4bL.setPosition(0.2);
+                v4bR.setPosition(0.73);
                 openClaw();
-
             }
             //Close Claw
             if (gamepad1.a) {
                 closeClaw();
-            }
-
-            //Open Claw
-            if (gamepad2.x) {
-                //v4bL = 0.5
-                //v4bR = 0.43
-                v4bL.setPosition(0.2);
-                v4bR.setPosition(0.73);
-            }
-            //Close Claw
-            if (gamepad2.a) {
+                sleep(500);
                 v4bL.setPosition(0.93);
                 v4bR.setPosition(0);
+            }
+
+            if (gamepad1.x) {
+                openClaw();
             }
 
 
@@ -198,13 +193,11 @@ public class TeleOpStaging extends LinearOpMode {
                 }
                 //Raise for ground junction
                 if (gamepad1.y) {
-                    slideTarget = 200;
-                    slideL.setPower(1);
-                    slideR.setPower(-1);
+                    v4bL.setPosition(0.25);
+                    v4bR.setPosition(0.68);
                 }
             }
             if (gamepad1.dpad_down) {
-                closeClaw();
                 if (slideL.getCurrentPosition()<500) {
                     sleep(600);
                 }
