@@ -8,19 +8,19 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.Servo;
 
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.vision.AprilTagDetectionPipeline;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.vision.PoleDetectionPipeline;
-import org.openftc.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.teamcode.vision.CombinedPipeline;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -33,15 +33,19 @@ public class BlueAutoLeft2 extends LinearOpMode
 {
     OpenCvCamera camera;
     Trajectory startToPole;
-    Trajectory poleToCone;
+    TrajectorySequence poleToDrop;
+    TrajectorySequence dropToCone;
     Trajectory coneToPole;
 
-    PoleDetectionPipeline poleDetectionPipeline;
+    CombinedPipeline combinedPipeline;
 
     public DcMotorEx motorFrontLeft = null;
     public DcMotorEx motorFrontRight = null;
     public DcMotorEx motorBackLeft = null;
     public DcMotorEx motorBackRight = null;
+
+    public DcMotorEx slideL = null;
+    public DcMotorEx slideR = null;
 
     private DistanceSensor distanceSensor = null;
 
@@ -63,8 +67,11 @@ public class BlueAutoLeft2 extends LinearOpMode
 
     }
 
-    // Default to IDLE
-    State currentState = State.IDLE;
+    public Servo servoL = null;
+    public Servo servoR = null;
+
+    public Servo v4bL = null;
+    public Servo v4bR = null;
 
 
     @Override
@@ -86,16 +93,25 @@ public class BlueAutoLeft2 extends LinearOpMode
 
         distanceSensor = hardwareMap.get(DistanceSensor.class, "Distance");
 
-        sensorOffset = 139.7;
+        sensorOffset = 266.7;
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         imu.initialize(parameters);
 
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        double fx = 578.272;
+        double fy = 578.272;
+        double cx = 402.145;
+        double cy = 221.506;
+
+        // UNITS ARE METERS
+        double tagsize = 0.035;
+
+
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"));
-        poleDetectionPipeline = new PoleDetectionPipeline();
+        combinedPipeline = new CombinedPipeline(tagsize, fx, fy, cx, cy);
+        combinedPipeline.currentState = CombinedPipeline.TagOrPole.POLE;
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         Pose2d startPose = new Pose2d(36, 62, Math.toRadians(270));
@@ -109,14 +125,25 @@ public class BlueAutoLeft2 extends LinearOpMode
                 .splineTo(new Vector2d(35, 10), Math.toRadians(215))
                 .build();
 
-        poleToCone = null;
-
         coneToPole = drive.trajectoryBuilder(new Pose2d(56, 12, Math.toRadians(180)), false)
                 .forward(5)
                 .splineTo(new Vector2d(35, 10), Math.toRadians(215))
                 .build();
 
-        camera.setPipeline(poleDetectionPipeline);
+        slideL = hardwareMap.get(DcMotorEx.class, "slideL");
+        slideR = hardwareMap.get(DcMotorEx.class, "slideR");
+
+
+
+        v4bL = hardwareMap.get(Servo.class, "v4BL");
+        v4bR = hardwareMap.get(Servo.class, "v4BR");
+        v4bUp();
+
+        servoL = hardwareMap.get(Servo.class, "servoL");
+        servoR = hardwareMap.get(Servo.class, "servoR");
+        closeClaw();
+
+        camera.setPipeline(combinedPipeline);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
@@ -129,13 +156,15 @@ public class BlueAutoLeft2 extends LinearOpMode
             }
         });
 
+        State currentState = State.preload_cone;
+
         telemetry.setMsTransmissionInterval(50);
 
         while (!isStarted() && !isStopRequested()) {
-            telemetry.addData("Pole X", poleDetectionPipeline.poleX);
-            telemetry.addData("Pole Y", poleDetectionPipeline.poleY);
-            telemetry.addData("Pole Width", poleDetectionPipeline.poleWidth);
-            telemetry.addData("Pole Center", (poleDetectionPipeline.poleX + (poleDetectionPipeline.poleWidth / 2.0)));
+            telemetry.addData("Pole X", combinedPipeline.poleX);
+            telemetry.addData("Pole Y", combinedPipeline.poleY);
+            telemetry.addData("Pole Width", combinedPipeline.poleWidth);
+            telemetry.addData("Pole Center", (combinedPipeline.poleX + (combinedPipeline.poleWidth / 2.0)));
             telemetry.addData("Distance sensor", distanceSensor.getDistance(DistanceUnit.MM));
             telemetry.update();
 
@@ -149,73 +178,74 @@ public class BlueAutoLeft2 extends LinearOpMode
          * during the init loop.
          */
 
-        switch (currentState) {
-            case IDLE:
-                motorFrontRight.setVelocity(0);
-                motorBackRight.setVelocity(0);
-                motorFrontLeft.setVelocity(0);
-                motorBackLeft.setVelocity(0);
-            case preload_cone:
-                //Drive to pole
-                drive.followTrajectory(startToPole);
-                sleep(2000);
+        while (opModeIsActive()) {
+            switch (currentState) {
+                case IDLE:
+                    sleep(30000);
+                    break;
+                case preload_cone:
+                    //Drive to pole
+                    drive.followTrajectory(startToPole);
+                    sleep(2000);
 
-                //Align the robot and get new position
-                align();
-                sleep(1000);
+                    //Align the robot and get new position
+                    align();
+                    sleep(1000);
 
-                relocalizedPose = relocalize();
-                drive.setPoseEstimate(relocalizedPose);
+                    relocalizedPose = relocalize();
+                    drive.setPoseEstimate(relocalizedPose);
 
-                currentState = State.IDLE;
-            case stack_cone_0:
-                poleToCone = drive.trajectoryBuilder(relocalizedPose, true)
-                        .splineTo(conePosition, 0)
-                        .build();
+                    poleToDrop = drive.trajectorySequenceBuilder(relocalizedPose)
+                            .back(2.5)
+                            .build();
 
-                //Drive to cones
-                drive.followTrajectory(poleToCone);
+                    dropToCone = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                            .setReversed(true)
+                            .waitSeconds(2)
+                            .splineTo(new Vector2d(56.5, 14), Math.toRadians(0))
+                            .build();
 
-                pickup_stack_cone_0();
+                    //Drive to cones
+                    drive.followTrajectorySequence(poleToDrop);
 
-                drive.followTrajectory(coneToPole);
-                sleep(2000);
+                    v4bUp();
+                    slideUp(2200);
+                    openClaw();
+                    sleep(500);
+                    v4bDown();
 
-                //Align the robot and get new position
-                align();
-                sleep(1000);
-
-                relocalizedPose = relocalize();
-                drive.setPoseEstimate(relocalizedPose);
-
-                currentState = State.stack_cone_1;
-            case stack_cone_1:
+                    currentState = State.IDLE;
+                    break;
+                case stack_cone_0:
+//                poleToCone = drive.trajectoryBuilder(relocalizedPose, true)
+//                        .splineTo(conePosition, 0)
+//                        .build();
+//
+//                //Drive to cones
+//                drive.followTrajectory(poleToCone);
+//
+//                pickup_stack_cone_0();
+//
+//                drive.followTrajectory(coneToPole);
+//                sleep(2000);
+//
+//                //Align the robot and get new position
+//                align();
+//                sleep(1000);
+//
+//                relocalizedPose = relocalize();
+//                drive.setPoseEstimate(relocalizedPose);
+//
+//                currentState = State.stack_cone_1;
+                    break;
+                case stack_cone_1:
+                    break;
+            }
 
         }
 
-
         /* Wait until program ends */
         sleep(30000);
-    }
-
-    public void cycle(SampleMecanumDrive drive) {
-        //Drive to pole
-        drive.setPoseEstimate(new Pose2d(56, 12, Math.toRadians(180)));
-        drive.followTrajectory(coneToPole);
-        sleep(2000);
-
-        //Align the robot and get new position
-        align();
-        sleep(1000);
-
-        relocalizedPose = relocalize();
-        drive.setPoseEstimate(relocalizedPose);
-        poleToCone = drive.trajectoryBuilder(relocalizedPose, true)
-                .splineTo(new Vector2d(56, 13), Math.toRadians(0))
-                .build();
-
-        //Drive to cones
-        drive.followTrajectory(poleToCone);
     }
 
     //Get new position
@@ -240,20 +270,20 @@ public class BlueAutoLeft2 extends LinearOpMode
     }
 
     public void align() {
-        while (poleDetectionPipeline.poleX + (poleDetectionPipeline.poleWidth / 2.0) < 375
-                || poleDetectionPipeline.poleX + (poleDetectionPipeline.poleWidth / 2.0) > 425 && opModeIsActive()) {
+        while ((combinedPipeline.poleX + (combinedPipeline.poleWidth / 2.0) < 385
+                || combinedPipeline.poleX + (combinedPipeline.poleWidth / 2.0) > 415) && opModeIsActive()) {
 
-            telemetry.addData("Pole X", poleDetectionPipeline.poleX);
-            telemetry.addData("Pole Y", poleDetectionPipeline.poleY);
-            telemetry.addData("Pole Width", poleDetectionPipeline.poleWidth);
-            telemetry.addData("Pole Center", (poleDetectionPipeline.poleX + (poleDetectionPipeline.poleWidth / 2.0)));
+            telemetry.addData("Pole X", combinedPipeline.poleX);
+            telemetry.addData("Pole Y", combinedPipeline.poleY);
+            telemetry.addData("Pole Width", combinedPipeline.poleWidth);
+            telemetry.addData("Pole Center", (combinedPipeline.poleX + (combinedPipeline.poleWidth / 2.0)));
             telemetry.update();
-            if (poleDetectionPipeline.poleX + (poleDetectionPipeline.poleWidth / 2.0) < 375) {
+            if (combinedPipeline.poleX + (combinedPipeline.poleWidth / 2.0) < 385) {
                 motorFrontRight.setVelocity(motorVelocity);
                 motorBackRight.setVelocity(-motorVelocity);
                 motorFrontLeft.setVelocity(-motorVelocity);
                 motorBackLeft.setVelocity(motorVelocity);
-            } else if (poleDetectionPipeline.poleX + (poleDetectionPipeline.poleWidth / 2.0) > 425) {
+            } else if (combinedPipeline.poleX + (combinedPipeline.poleWidth / 2.0) > 415) {
                 motorFrontRight.setVelocity(-motorVelocity);
                 motorBackRight.setVelocity(motorVelocity);
                 motorFrontLeft.setVelocity(motorVelocity);
@@ -265,7 +295,7 @@ public class BlueAutoLeft2 extends LinearOpMode
         motorFrontLeft.setVelocity(0);
         motorBackLeft.setVelocity(0);
 
-        while (distanceSensor.getDistance(DistanceUnit.MM) < 85 || distanceSensor.getDistance(DistanceUnit.MM) > 95 && opModeIsActive()) {
+        while ((distanceSensor.getDistance(DistanceUnit.MM) < 85 || distanceSensor.getDistance(DistanceUnit.MM) > 95) && opModeIsActive()) {
             if (distanceSensor.getDistance(DistanceUnit.MM) < 85) {
                 motorFrontRight.setVelocity(-motorVelocity);
                 motorBackRight.setVelocity(-motorVelocity);
@@ -290,7 +320,43 @@ public class BlueAutoLeft2 extends LinearOpMode
         //Pickup the cone
     }
 
+    public void openClaw() {
+        servoL.setPosition(0.02);
+        servoR.setPosition(0.25);
+    }
 
+    public void closeClaw() {
+        servoL.setPosition(0.15);
+        servoR.setPosition(0.1);
+    }
+
+    public void slideUp(int slideTarget) {
+        motorFrontRight.setPower(0);
+        motorBackRight.setPower(0);
+        motorFrontLeft.setPower(0);
+        motorBackLeft.setPower(0);
+        slideL.setTargetPosition(slideTarget);
+        slideR.setTargetPosition(-slideTarget);
+        slideL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideL.setPower(0.95);
+        slideR.setPower(-0.95);
+        while (slideL.isBusy()) {
+            telemetry.addData("Slide L position", slideL.getCurrentPosition());
+            telemetry.addData("Slide L current", slideL.getCurrent(CurrentUnit.AMPS));
+            telemetry.update();
+        }
+    }
+
+    public void v4bUp() {
+        v4bL.setPosition(0.93);
+        v4bR.setPosition(0);
+    }
+
+    public void v4bDown() {
+        v4bL.setPosition(0.2);
+        v4bR.setPosition(0.73);
+    }
 
 
 
