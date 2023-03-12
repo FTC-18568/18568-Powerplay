@@ -22,6 +22,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.vision.AprilTagDetectionPipeline;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.vision.CombinedPipeline;
 import org.firstinspires.ftc.teamcode.vision.PoleDetectionPipeline;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -36,10 +37,11 @@ public class RelocalizedAutoTest extends LinearOpMode
 {
     OpenCvCamera camera;
     Trajectory startToPole;
-    TrajectorySequence poleToCone;
+    TrajectorySequence poleToDrop;
+    TrajectorySequence dropToCone;
     Trajectory coneToPole;
 
-    PoleDetectionPipeline poleDetectionPipeline;
+    CombinedPipeline poleDetectionPipeline;
 
     public DcMotorEx motorFrontLeft = null;
     public DcMotorEx motorFrontRight = null;
@@ -64,6 +66,14 @@ public class RelocalizedAutoTest extends LinearOpMode
 
     public Servo v4bL = null;
     public Servo v4bR = null;
+
+    double fx = 578.272;
+    double fy = 578.272;
+    double cx = 402.145;
+    double cy = 221.506;
+
+    // UNITS ARE METERS
+    double tagsize = 0.035;
 
 
     @Override
@@ -93,7 +103,8 @@ public class RelocalizedAutoTest extends LinearOpMode
         imu.initialize(parameters);
 
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"));
-        poleDetectionPipeline = new PoleDetectionPipeline();
+        poleDetectionPipeline = new CombinedPipeline(tagsize, fx, fy, cx, cy);
+        poleDetectionPipeline.currentState = CombinedPipeline.TagOrPole.POLE;
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         Pose2d startPose = new Pose2d(36, 62, Math.toRadians(270));
@@ -105,7 +116,8 @@ public class RelocalizedAutoTest extends LinearOpMode
                 .splineTo(new Vector2d(35, 10), Math.toRadians(215))
                 .build();
 
-        poleToCone = null;
+        poleToDrop = null;
+        dropToCone = null;
 
         coneToPole = drive.trajectoryBuilder(new Pose2d(56, 12, Math.toRadians(180)), false)
                 .forward(5)
@@ -146,6 +158,11 @@ public class RelocalizedAutoTest extends LinearOpMode
             }
         });
 
+        closeClaw();
+        sleep(500);
+        v4bL.setPosition(0.93);
+        v4bR.setPosition(0);
+
         telemetry.setMsTransmissionInterval(50);
 
         while (!isStarted() && !isStopRequested()) {
@@ -166,7 +183,6 @@ public class RelocalizedAutoTest extends LinearOpMode
          * during the init loop.
          */
 
-
         while (opModeIsActive()) {
             //Drive to pole
             drive.followTrajectory(startToPole);
@@ -179,41 +195,35 @@ public class RelocalizedAutoTest extends LinearOpMode
             relocalizedPose = relocalize();
             drive.setPoseEstimate(relocalizedPose);
 
-            poleToCone = drive.trajectorySequenceBuilder(relocalizedPose)
-                    .back(4)
-                    .setReversed(true)
-                    .waitSeconds(5)
-                    .splineTo(new Vector2d(56.5, 14), Math.toRadians(0))
+            poleToDrop = drive.trajectorySequenceBuilder(relocalizedPose)
+                    .back(2.5)
                     .build();
 
-            sleep(1000);
+            dropToCone = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                .setReversed(true)
+                .waitSeconds(2)
+                .splineTo(new Vector2d(56.5, 14), Math.toRadians(0))
+                .build();
 
 
 
-            servoL.setPosition(0.02);
-            servoR.setPosition(0.25);
+
 
             //Drive to cones
-            drive.followTrajectorySequence(poleToCone);
+            drive.followTrajectorySequence(poleToDrop);
 
-            v4bL.setPosition(0.35);
-            v4bR.setPosition(0.58);
+            v4bUp();
+            slideUp(2200);
+            openClaw();
+            sleep(500);
+            v4bDown();
 
-
-            slideL.setPower(0.2);
-            slideR.setPower(-0.2);
-            slideL.setTargetPosition(210);
-            slideR.setTargetPosition(-210);
-            slideL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            slideR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            while (slideL.isBusy() && opModeIsActive()) {
-                telemetry.addData("Slide L", slideL.getCurrent(CurrentUnit.AMPS));
-            }
 
 
             /* Wait until program ends */
             sleep(30000);
+//
+
         }
     }
 
@@ -259,20 +269,20 @@ public class RelocalizedAutoTest extends LinearOpMode
     }
 
     public void align() {
-        while ((poleDetectionPipeline.poleX + (poleDetectionPipeline.poleWidth / 2.0) < 375
-                || poleDetectionPipeline.poleX + (poleDetectionPipeline.poleWidth / 2.0) > 425) && opModeIsActive()) {
+        while ((poleDetectionPipeline.poleX + (poleDetectionPipeline.poleWidth / 2.0) < 385
+                || poleDetectionPipeline.poleX + (poleDetectionPipeline.poleWidth / 2.0) > 415) && opModeIsActive()) {
 
             telemetry.addData("Pole X", poleDetectionPipeline.poleX);
             telemetry.addData("Pole Y", poleDetectionPipeline.poleY);
             telemetry.addData("Pole Width", poleDetectionPipeline.poleWidth);
             telemetry.addData("Pole Center", (poleDetectionPipeline.poleX + (poleDetectionPipeline.poleWidth / 2.0)));
             telemetry.update();
-            if (poleDetectionPipeline.poleX + (poleDetectionPipeline.poleWidth / 2.0) < 375) {
+            if (poleDetectionPipeline.poleX + (poleDetectionPipeline.poleWidth / 2.0) < 385) {
                 motorFrontRight.setVelocity(motorVelocity);
                 motorBackRight.setVelocity(-motorVelocity);
                 motorFrontLeft.setVelocity(-motorVelocity);
                 motorBackLeft.setVelocity(motorVelocity);
-            } else if (poleDetectionPipeline.poleX + (poleDetectionPipeline.poleWidth / 2.0) > 425) {
+            } else if (poleDetectionPipeline.poleX + (poleDetectionPipeline.poleWidth / 2.0) > 415) {
                 motorFrontRight.setVelocity(-motorVelocity);
                 motorBackRight.setVelocity(motorVelocity);
                 motorFrontLeft.setVelocity(motorVelocity);
@@ -305,7 +315,43 @@ public class RelocalizedAutoTest extends LinearOpMode
         motorBackLeft.setVelocity(0);
     }
 
+    public void openClaw() {
+        servoL.setPosition(0.02);
+        servoR.setPosition(0.25);
+    }
 
+    public void closeClaw() {
+        servoL.setPosition(0.15);
+        servoR.setPosition(0.1);
+    }
+
+    public void slideUp(int slideTarget) {
+        motorFrontRight.setPower(0);
+        motorBackRight.setPower(0);
+        motorFrontLeft.setPower(0);
+        motorBackLeft.setPower(0);
+        slideL.setTargetPosition(slideTarget);
+        slideR.setTargetPosition(-slideTarget);
+        slideL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideL.setPower(0.95);
+        slideR.setPower(-0.95);
+        while (slideL.isBusy()) {
+            telemetry.addData("Slide L position", slideL.getCurrentPosition());
+            telemetry.addData("Slide L current", slideL.getCurrent(CurrentUnit.AMPS));
+            telemetry.update();
+        }
+    }
+
+    public void v4bUp() {
+        v4bL.setPosition(0.93);
+        v4bR.setPosition(0);
+    }
+
+    public void v4bDown() {
+        v4bL.setPosition(0.2);
+        v4bR.setPosition(0.73);
+    }
 
 
 

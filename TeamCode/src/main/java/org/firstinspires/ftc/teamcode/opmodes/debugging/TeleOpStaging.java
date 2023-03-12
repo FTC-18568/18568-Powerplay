@@ -44,8 +44,6 @@ public class TeleOpStaging extends LinearOpMode {
 
     private BNO055IMU imu;
 
-    private boolean clawOpen;
-
     private double vertical;
     private double horizontal;
     private double pivot;
@@ -178,25 +176,34 @@ public class TeleOpStaging extends LinearOpMode {
 
 
 
-            if (!clawOpen) {
-                //Raise for high goal
-                if (gamepad1.dpad_up) {
-                    slideTarget = 2200;
-                    slideL.setPower(1);
-                    slideR.setPower(-1);
-                }
-                //Raise for medium goal/low goal
-                if (gamepad1.dpad_right) {
-                    slideTarget = 1800;
-                    slideL.setPower(1);
-                    slideR.setPower(-1);
-                }
-                //Raise for ground junction
-                if (gamepad1.y) {
-                    v4bL.setPosition(0.25);
-                    v4bR.setPosition(0.68);
-                }
+            //Raise for high goal
+            if (gamepad1.dpad_up) {
+                slideTarget = 2200;
+                slideL.setPower(1);
+                slideR.setPower(-1);
             }
+            //Raise for medium goal/low goal
+            if (gamepad1.dpad_right) {
+                slideTarget = 1800;
+                slideL.setPower(1);
+                slideR.setPower(-1);
+            }
+            if (gamepad1.dpad_left) {
+                slideTarget = 600;
+                slideL.setPower(1);
+                slideR.setPower(-1);
+            }
+            //Raise for ground junction
+            if (gamepad1.y) {
+                v4bL.setPosition(0.3);
+                v4bR.setPosition(0.63);
+            }
+            if (gamepad1.back) {
+                v4bL.setPosition(0.93);
+                v4bR.setPosition(0);
+                v4bR.setPosition(0);
+            }
+
             if (gamepad1.dpad_down) {
                 if (slideL.getCurrentPosition()<500) {
                     sleep(600);
@@ -241,23 +248,6 @@ public class TeleOpStaging extends LinearOpMode {
         }
     }
 
-    public void slideUp(int slideTarget) {
-        motorFrontRight.setPower(0);
-        motorBackRight.setPower(0);
-        motorFrontLeft.setPower(0);
-        motorBackLeft.setPower(0);
-        slideL.setTargetPosition(slideTarget);
-        slideR.setTargetPosition(-slideTarget);
-        slideL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        slideR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        slideL.setPower(0.95);
-        slideR.setPower(-0.95);
-        while (slideL.isBusy()) {
-            telemetry.addData("Slide L position", slideL.getCurrentPosition());
-            telemetry.addData("Slide L current", slideL.getCurrent(CurrentUnit.AMPS));
-            telemetry.update();
-        }
-    }
 
     public void slideDown(int slideTarget, boolean openClaw) {
         motorFrontRight.setPower(0);
@@ -285,7 +275,6 @@ public class TeleOpStaging extends LinearOpMode {
     }
 
     public void openClaw() {
-        clawOpen = true;
         servoL.setPosition(0.02);
         servoR.setPosition(0.25);
     }
@@ -293,6 +282,5 @@ public class TeleOpStaging extends LinearOpMode {
     public void closeClaw() {
         servoL.setPosition(0.15);
         servoR.setPosition(0.1);
-        clawOpen = false;
     }
 }
